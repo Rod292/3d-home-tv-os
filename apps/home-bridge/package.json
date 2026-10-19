@@ -1,0 +1,24 @@
+{
+  "name": "@appart3d/home-bridge",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Passerelle maison Appart3D : Hue + Home Assistant + robot StackChan, API et appli web sur le réseau local.",
+  "engines": { "node": ">=24" },
+  "scripts": {
+    "start": "node src/main.ts",
+    "dev": "node --watch src/main.ts",
+    "dev:mock": "HOME_BRIDGE_MOCK=1 node --watch src/main.ts",
+    "pair": "node src/pair.ts",
+    "test": "vitest run",
+    "typecheck": "tsc -p ."
+  },
+  "dependencies": {
+    "@appart3d/home": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0",
+    "vitest": "^3.2.0"
+  }
+}

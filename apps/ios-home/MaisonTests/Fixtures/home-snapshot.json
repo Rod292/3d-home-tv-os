@@ -1,0 +1,34 @@
+{
+  "home": "Appartement d'Alex",
+  "updatedAt": "2026-10-14T18:42:00.000Z",
+  "devices": [
+    { "id": "hue:light:1", "name": "Plafonnier salon", "kind": "light", "source": "hue", "room": "Salon", "itemId": "item-ceiling-1",
+      "state": { "on": true, "reachable": true, "brightness": 80, "color": "#ffb46b", "kelvin": 2700 },
+      "capabilities": { "brightness": true, "color": true, "kelvin": true } },
+    { "id": "hue:light:2", "name": "Lampe chambre", "kind": "light", "source": "hue", "room": "Chambre",
+      "state": { "on": false, "reachable": true, "brightness": 0 },
+      "capabilities": { "brightness": true } },
+    { "id": "hue:light:3", "name": "Ruban cuisine", "kind": "light", "source": "hue", "room": "Cuisine",
+      "state": { "on": null, "reachable": false },
+      "capabilities": {} },
+    { "id": "ha:switch.prise_lampadaire", "name": "Lampadaire", "kind": "plug", "source": "homeassistant", "room": "Salon",
+      "state": { "on": true, "reachable": true },
+      "capabilities": {} },
+    { "id": "ha:fan.windcalm", "name": "Ventilateur", "kind": "fan", "source": "homeassistant", "room": "Chambre",
+      "state": { "on": true, "reachable": true, "speed": 50, "lightOn": true },
+      "capabilities": { "speedSteps": 6, "fanLight": true } },
+    { "id": "robot:tv", "name": "Télé", "kind": "tv", "source": "robot", "room": "Salon",
+      "state": { "on": true, "reachable": true, "volume": 22, "source": "Netflix" },
+      "capabilities": { "volume": true, "buttons": ["power", "vol+", "vol-"] } },
+    { "id": "mock:aquarium", "name": "Aquarium", "kind": "aquarium", "source": "mock", "room": "Salon",
+      "state": { "on": true, "reachable": true, "futureField": 1 },
+      "capabilities": { "somethingNew": true } }
+  ],
+  "scenes": [
+    { "id": "bright", "name": "Lumineux", "icon": "sun" },
+    { "id": "cozy", "name": "Cosy", "icon": "sofa" },
+    { "id": "movie", "name": "Film", "icon": "film" },
+    { "id": "night", "name": "Nuit", "icon": "moon" },
+    { "id": "away", "name": "Absent", "icon": "door" }
+  ]
+}

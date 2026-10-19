@@ -1,0 +1,8 @@
+---
+description: 3D Home TV OS — agent playbook entry point
+alwaysApply: true
+---
+
+Read and follow `AGENTS.md` at the repo root before doing anything: start with `playbook/00-start.md`,
+one phase at a time with its verification, read `playbook/gotchas.md` first, ask before any action on
+the TV or on real devices, and never commit scans, scenes, tokens or device config.

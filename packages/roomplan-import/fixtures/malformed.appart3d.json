@@ -1,0 +1,18 @@
+{
+  "format": "appart3d.roomplan",
+  "version": 1,
+  "capturedAt": "2026-10-09T12:00:00Z",
+  "structure": null,
+  "rooms": [
+    {
+      "identifier": "0B1C2D3E-0000-4000-8000-000000000000",
+      "walls": [
+        { "identifier": "W1", "category": { "wall": {} }, "dimensions": "3.2 x 2.5", "transform": [1, 0, 0] },
+        { "identifier": "W2", "category": "wall", "dimensions": [0, 2.5, 0], "transform": null }
+      ],
+      "objects": "aucun",
+      "floors": [{ "polygonCorners": "?" }]
+    }
+  ],
+  "roomNames": ["Séjour"]
+}

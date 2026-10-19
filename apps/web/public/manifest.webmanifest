@@ -1,0 +1,18 @@
+{
+  "name": "Appart3D",
+  "short_name": "Maison",
+  "description": "Mon appartement en 3D : lampes, ventilateur et télé pilotés depuis la maquette.",
+  "lang": "fr",
+  "start_url": "/?home=1",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "theme_color": "#221d24",
+  "background_color": "#221d24",
+  "icons": [
+    { "src": "/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" },
+    { "src": "/icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
+  ]
+}

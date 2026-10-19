@@ -1,0 +1,664 @@
+{
+  "version": 1,
+  "id": "scene_504e45c2d322",
+  "name": "Appartement de démo",
+  "units": "m",
+  "rooms": [
+    {
+      "id": "room_1",
+      "name": "Séjour",
+      "kind": "living",
+      "floor": [
+        [
+          0.5,
+          0.5
+        ],
+        [
+          5.4996,
+          0.5
+        ],
+        [
+          5.4996,
+          4.6955
+        ],
+        [
+          0.5,
+          4.6955
+        ]
+      ],
+      "floorMaterial": "wood",
+      "floorColor": "#d9b48a"
+    },
+    {
+      "id": "room_2",
+      "name": "Chambre",
+      "kind": "bedroom",
+      "floor": [
+        [
+          5.4996,
+          0.5
+        ],
+        [
+          9.0011,
+          0.5
+        ],
+        [
+          9.0011,
+          3.1008
+        ],
+        [
+          5.4996,
+          3.1008
+        ]
+      ],
+      "floorMaterial": "wood",
+      "floorColor": "#d9b48a"
+    },
+    {
+      "id": "room_3",
+      "name": "Salle de bain",
+      "kind": "bathroom",
+      "floor": [
+        [
+          5.4996,
+          3.1008
+        ],
+        [
+          9.0011,
+          3.1008
+        ],
+        [
+          9.0011,
+          4.6955
+        ],
+        [
+          5.4996,
+          4.6955
+        ]
+      ],
+      "floorMaterial": "tile",
+      "floorColor": "#e6e9ec"
+    }
+  ],
+  "walls": [
+    {
+      "id": "wall_1",
+      "start": [
+        0.5,
+        0.5
+      ],
+      "end": [
+        5.4996,
+        0.5
+      ],
+      "height": 2.55,
+      "thickness": 0.12
+    },
+    {
+      "id": "wall_2",
+      "start": [
+        5.4996,
+        0.5
+      ],
+      "end": [
+        5.4996,
+        4.6955
+      ],
+      "height": 2.55,
+      "thickness": 0.12
+    },
+    {
+      "id": "wall_3",
+      "start": [
+        5.4996,
+        4.6955
+      ],
+      "end": [
+        0.5,
+        4.6955
+      ],
+      "height": 2.55,
+      "thickness": 0.12
+    },
+    {
+      "id": "wall_4",
+      "start": [
+        0.5,
+        4.6955
+      ],
+      "end": [
+        0.5,
+        0.5
+      ],
+      "height": 2.55,
+      "thickness": 0.12
+    },
+    {
+      "id": "wall_5",
+      "start": [
+        5.4996,
+        0.5
+      ],
+      "end": [
+        9.0011,
+        0.5
+      ],
+      "height": 2.55,
+      "thickness": 0.12
+    },
+    {
+      "id": "wall_6",
+      "start": [
+        9.0011,
+        0.5
+      ],
+      "end": [
+        9.0011,
+        3.1008
+      ],
+      "height": 2.55,
+      "thickness": 0.12
+    },
+    {
+      "id": "wall_7",
+      "start": [
+        5.4996,
+        3.1008
+      ],
+      "end": [
+        9.0011,
+        3.1008
+      ],
+      "height": 2.55,
+      "thickness": 0.12
+    },
+    {
+      "id": "wall_8",
+      "start": [
+        9.0011,
+        3.1008
+      ],
+      "end": [
+        9.0011,
+        4.6955
+      ],
+      "height": 2.55,
+      "thickness": 0.12
+    },
+    {
+      "id": "wall_9",
+      "start": [
+        9.0011,
+        4.6955
+      ],
+      "end": [
+        5.4996,
+        4.6955
+      ],
+      "height": 2.55,
+      "thickness": 0.12
+    }
+  ],
+  "openings": [
+    {
+      "id": "opening_1",
+      "wallId": "wall_4",
+      "kind": "door",
+      "offset": 0.7878,
+      "width": 0.9,
+      "height": 2.05,
+      "sill": 0
+    },
+    {
+      "id": "opening_2",
+      "wallId": "wall_2",
+      "kind": "door",
+      "offset": 1.3027,
+      "width": 0.83,
+      "height": 2.04,
+      "sill": 0
+    },
+    {
+      "id": "opening_3",
+      "wallId": "wall_2",
+      "kind": "door",
+      "offset": 3.4027,
+      "width": 0.75,
+      "height": 2,
+      "sill": 0
+    },
+    {
+      "id": "opening_4",
+      "wallId": "wall_1",
+      "kind": "window",
+      "offset": 2.4982,
+      "width": 1.6,
+      "height": 1.35,
+      "sill": 0.9
+    },
+    {
+      "id": "opening_5",
+      "wallId": "wall_5",
+      "kind": "window",
+      "offset": 1.7486,
+      "width": 1.2,
+      "height": 1.3,
+      "sill": 0.95
+    },
+    {
+      "id": "opening_6",
+      "wallId": "wall_8",
+      "kind": "window",
+      "offset": 0.7983,
+      "width": 0.6,
+      "height": 0.6,
+      "sill": 1.5
+    }
+  ],
+  "items": [
+    {
+      "id": "item_1",
+      "category": "sofa",
+      "position": [
+        3.002,
+        0,
+        4.157386324790069
+      ],
+      "rotationY": -3.14058,
+      "dimensions": [
+        2.2,
+        0.85,
+        0.95
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_1",
+      "label": "Canapé"
+    },
+    {
+      "id": "item_2",
+      "category": "television",
+      "position": [
+        2.9985,
+        0.5,
+        0.7552
+      ],
+      "rotationY": 0.00101,
+      "dimensions": [
+        1.2,
+        0.7,
+        0.1
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_1",
+      "label": "Télévision"
+    },
+    {
+      "id": "item_3",
+      "category": "storage",
+      "position": [
+        2.9985,
+        0,
+        0.7628078978526354
+      ],
+      "rotationY": 0.00101,
+      "dimensions": [
+        1.6,
+        0.5,
+        0.4
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_1",
+      "label": "Rangement"
+    },
+    {
+      "id": "item_4",
+      "category": "table",
+      "position": [
+        1.4997,
+        0,
+        1.9067
+      ],
+      "rotationY": 1.57181,
+      "dimensions": [
+        1.2,
+        0.74,
+        0.8
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_1",
+      "label": "Table"
+    },
+    {
+      "id": "item_5",
+      "category": "chair",
+      "position": [
+        0.9497,
+        0,
+        1.9073
+      ],
+      "rotationY": 1.57181,
+      "dimensions": [
+        0.45,
+        0.85,
+        0.5
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_1",
+      "label": "Chaise"
+    },
+    {
+      "id": "item_6",
+      "category": "refrigerator",
+      "position": [
+        5.087246678577586,
+        0,
+        0.9123533214224142
+      ],
+      "rotationY": 0.00101,
+      "dimensions": [
+        0.7,
+        1.8,
+        0.7
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_1",
+      "label": "Réfrigérateur"
+    },
+    {
+      "id": "item_7",
+      "category": "stove",
+      "position": [
+        4.3986,
+        0,
+        0.8623028469334979
+      ],
+      "rotationY": 0.00101,
+      "dimensions": [
+        0.6,
+        0.9,
+        0.6
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_1",
+      "label": "Plaque de cuisson"
+    },
+    {
+      "id": "item_8",
+      "category": "bed",
+      "position": [
+        7.2493,
+        0,
+        1.5628074898126698
+      ],
+      "rotationY": 0.00101,
+      "dimensions": [
+        1.6,
+        0.5,
+        2
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_2",
+      "label": "Lit"
+    },
+    {
+      "id": "item_9",
+      "category": "nightstand",
+      "position": [
+        6.1485,
+        0,
+        0.7622271479513724
+      ],
+      "rotationY": 0.00101,
+      "dimensions": [
+        0.45,
+        0.5,
+        0.4
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_2",
+      "label": "Table de chevet"
+    },
+    {
+      "id": "item_10",
+      "category": "nightstand",
+      "position": [
+        8.3485,
+        0,
+        0.7622271479513724
+      ],
+      "rotationY": 0.00101,
+      "dimensions": [
+        0.45,
+        0.5,
+        0.4
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_2",
+      "label": "Table de chevet"
+    },
+    {
+      "id": "item_11",
+      "category": "wardrobe",
+      "position": [
+        8.63849035896605,
+        0,
+        2.3994
+      ],
+      "rotationY": -1.56978,
+      "dimensions": [
+        1.2,
+        2.1,
+        0.6
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_2",
+      "label": "Armoire"
+    },
+    {
+      "id": "item_12",
+      "category": "bathtub",
+      "position": [
+        8.088720690792293,
+        0,
+        4.257639436870889
+      ],
+      "rotationY": -3.14058,
+      "dimensions": [
+        1.7,
+        0.55,
+        0.75
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_3",
+      "label": "Baignoire"
+    },
+    {
+      "id": "item_13",
+      "category": "toilet",
+      "position": [
+        6.4521,
+        0,
+        4.308297635955077
+      ],
+      "rotationY": -3.14058,
+      "dimensions": [
+        0.4,
+        0.8,
+        0.65
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_3",
+      "label": "WC"
+    },
+    {
+      "id": "item_14",
+      "category": "sink",
+      "position": [
+        7.1022,
+        0,
+        4.408196319340045
+      ],
+      "rotationY": -3.14058,
+      "dimensions": [
+        0.6,
+        0.85,
+        0.45
+      ],
+      "source": "scan",
+      "confidence": 0.9,
+      "roomId": "room_3",
+      "label": "Lavabo"
+    },
+    {
+      "id": "item_15",
+      "category": "washerDryer",
+      "position": [
+        5.9012,
+        0,
+        3.4631028469334977
+      ],
+      "rotationY": 0.00101,
+      "dimensions": [
+        0.6,
+        0.85,
+        0.6
+      ],
+      "source": "scan",
+      "confidence": 0.3,
+      "roomId": "room_3",
+      "label": "Lave-linge"
+    },
+    {
+      "id": "item_floorlamp",
+      "category": "floorLamp",
+      "position": [
+        4.95,
+        0,
+        4.15
+      ],
+      "rotationY": 0.0,
+      "dimensions": [
+        0.32,
+        1.5,
+        0.32
+      ],
+      "roomId": "room_1",
+      "source": "user",
+      "label": "Lampadaire",
+      "variant": "floorLamp/evedal"
+    },
+    {
+      "id": "item_table_lamp",
+      "category": "lamp",
+      "position": [
+        1.25,
+        0.74,
+        1.65
+      ],
+      "rotationY": 0.0,
+      "dimensions": [
+        0.32,
+        0.38,
+        0.32
+      ],
+      "roomId": "room_1",
+      "source": "user",
+      "label": "Lampe à poser",
+      "variant": "lamp/mushroom"
+    },
+    {
+      "id": "item_pendant",
+      "category": "pendantLamp",
+      "position": [
+        2.6,
+        1.8,
+        2.5
+      ],
+      "rotationY": 0.0,
+      "dimensions": [
+        0.6,
+        0.8,
+        0.6
+      ],
+      "roomId": "room_1",
+      "source": "user",
+      "label": "Suspension séjour",
+      "variant": "pendantLamp/globe"
+    },
+    {
+      "id": "item_pendant_kitchen",
+      "category": "pendantLamp",
+      "position": [
+        4.6,
+        1.9,
+        1.5
+      ],
+      "rotationY": 0.0,
+      "dimensions": [
+        0.22,
+        0.7,
+        0.22
+      ],
+      "roomId": "room_1",
+      "source": "user",
+      "label": "Suspension cuisine",
+      "variant": "pendantLamp/dome"
+    },
+    {
+      "id": "item_donut",
+      "category": "lamp",
+      "position": [
+        6.15,
+        0.5,
+        0.76
+      ],
+      "rotationY": 0.0,
+      "dimensions": [
+        0.3,
+        0.32,
+        0.12
+      ],
+      "roomId": "room_2",
+      "source": "user",
+      "label": "Lampe donut",
+      "variant": "lamp/donut"
+    },
+    {
+      "id": "item_fan",
+      "category": "ceilingFan",
+      "position": [
+        7.25,
+        2.2,
+        1.56
+      ],
+      "rotationY": 0.0,
+      "dimensions": [
+        1.2,
+        0.4,
+        1.2
+      ],
+      "roomId": "room_2",
+      "source": "user",
+      "label": "Ventilateur"
+    }
+  ],
+  "meta": {
+    "createdAt": "2026-10-09T12:00:00Z",
+    "updatedAt": "2026-10-19T16:17:16.076Z",
+    "source": "roomplan",
+    "notes": "Scan RoomPlan · appareil iPhone16,1 · app 0.1.0 · capturé le 2026-10-09T12:00:00Z"
+  }
+}

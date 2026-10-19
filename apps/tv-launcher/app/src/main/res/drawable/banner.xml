@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- 16:9 banner: a small isometric house on a dark gradient. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="320dp"
+    android:height="180dp"
+    android:viewportWidth="320"
+    android:viewportHeight="180">
+    <path android:pathData="M0,0h320v180h-320z">
+        <aapt:attr xmlns:aapt="http://schemas.android.com/aapt" name="android:fillColor">
+            <gradient android:type="linear" android:startX="0" android:startY="0" android:endX="320" android:endY="180"
+                android:startColor="#FF2A2F3A" android:endColor="#FF0D0F14" />
+        </aapt:attr>
+    </path>
+    <path android:fillColor="#FFF2E6D0" android:pathData="M160,48 L210,76 L160,104 L110,76 Z" />
+    <path android:fillColor="#FFB9AE9A" android:pathData="M110,76 L160,104 L160,140 L110,112 Z" />
+    <path android:fillColor="#FF8C8373" android:pathData="M160,104 L210,76 L210,112 L160,140 Z" />
+    <path android:fillColor="#FFFFD27A" android:pathData="M176,100 L194,90 L194,106 L176,116 Z" />
+</vector>

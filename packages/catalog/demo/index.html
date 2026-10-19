@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Appart3D — Catalogue</title>
+    <style>
+      html, body, #root { margin: 0; height: 100%; background: #f6efe6; font-family: ui-rounded, "SF Pro Rounded", system-ui, sans-serif; color: #3a3330; }
+      .panel { position: fixed; top: 16px; left: 16px; z-index: 10; background: rgba(255, 250, 242, 0.92); border-radius: 14px; padding: 12px 14px; box-shadow: 0 6px 24px rgba(58, 51, 48, 0.12); font-size: 13px; line-height: 1.7; max-width: 280px; }
+      .panel h1 { font-size: 15px; margin: 0 0 4px; }
+      .panel label { display: flex; gap: 8px; align-items: center; cursor: pointer; }
+      .panel small { color: #7a6f68; display: block; margin-top: 4px; }
+      .lbl { pointer-events: none; white-space: nowrap; font-size: 11px; background: rgba(255, 250, 242, 0.85); padding: 1px 6px; border-radius: 6px; color: #3a3330; transform: translate(-50%, 0); }
+      .lbl b { font-weight: 600; }
+      .lbl i { color: #8a7d74; font-style: normal; }
+      .group { pointer-events: none; font-size: 15px; font-weight: 700; color: #b0603f; white-space: nowrap; }
+      .vignettes { position: fixed; top: 16px; right: 16px; bottom: 16px; width: 440px; overflow: auto; z-index: 10; background: rgba(255, 250, 242, 0.95); border-radius: 14px; padding: 10px 14px; box-shadow: 0 6px 24px rgba(58, 51, 48, 0.12); }
+      .vignettes.full { position: static; width: auto; height: 100%; box-sizing: border-box; border-radius: 0; box-shadow: none; background: #f6efe6; }
+      .vignettes h2 { font-size: 15px; margin: 2px 0 6px; }
+      .vignettes h3 { font-size: 12px; margin: 10px 0 4px; color: #b0603f; text-transform: uppercase; letter-spacing: 0.06em; }
+      .vignettes .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 8px; }
+      .thumb { margin: 0; background: #fffaf2; border-radius: 10px; padding: 4px; text-align: center; box-shadow: 0 1px 4px rgba(58, 51, 48, 0.08); }
+      .thumb img, .thumb .ph { width: 96px; height: 96px; display: block; margin: 0 auto; }
+      .thumb .ph { background: #efe5d8; border-radius: 8px; }
+      .thumb figcaption { font-size: 10.5px; color: #5a4f48; line-height: 1.25; margin-top: 2px; }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="./main.tsx"></script>
+  </body>
+</html>

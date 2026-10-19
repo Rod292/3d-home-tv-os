@@ -1,0 +1,18 @@
+{
+  "name": "3d-home-tv-os",
+  "private": true,
+  "packageManager": "pnpm@10.29.3",
+  "scripts": {
+    "dev": "pnpm --filter @appart3d/web dev",
+    "build": "pnpm -r build",
+    "typecheck": "pnpm -r typecheck",
+    "test": "pnpm -r test"
+  },
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "esbuild"
+    ]
+  },
+  "description": "Scan your home, turn it into a live 3D model, and make it your TV's home screen \u2014 with your lights wired in. An AI-agent playbook + reference implementation.",
+  "license": "MIT"
+}

@@ -1,0 +1,595 @@
+{
+  "format": "appart3d.roomplan",
+  "version": 1,
+  "capturedAt": "2026-10-09T12:00:00Z",
+  "device": "iPhone16,1",
+  "appVersion": "0.1.0",
+  "structure": null,
+  "rooms": [
+    {
+      "identifier": "94D72B78-8EF2-4148-9ED8-E47EAC5EFD02",
+      "story": 0,
+      "version": 2,
+      "walls": [
+        {
+          "identifier": "8B42C835-484F-43E3-8248-C1E89AF9ED02",
+          "parentIdentifier": null,
+          "category": {
+            "wall": {}
+          },
+          "confidence": {
+            "high": {}
+          },
+          "dimensions": [
+            5.0450706,
+            2.5,
+            0
+          ],
+          "transform": [
+            0.99130279,
+            0,
+            -0.13160105,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0.13160105,
+            0,
+            0.99130279,
+            0,
+            2.9033303,
+            -0.13,
+            -2.202625,
+            1
+          ],
+          "story": 0,
+          "completedEdges": [],
+          "curve": null,
+          "polygonCorners": []
+        },
+        {
+          "identifier": "FBB5522E-53A5-40AE-ADAE-18AEFD9FF8D0",
+          "parentIdentifier": null,
+          "category": {
+            "wall": {}
+          },
+          "confidence": {
+            "high": {}
+          },
+          "dimensions": [
+            3.9965215,
+            2.5,
+            0
+          ],
+          "transform": [
+            0.1337972,
+            0,
+            0.99100876,
+            0,
+            0,
+            1,
+            0,
+            0,
+            -0.99100876,
+            0,
+            0.1337972,
+            0,
+            5.6234074,
+            -0.13,
+            -0.54690605,
+            1
+          ],
+          "story": 0,
+          "completedEdges": [],
+          "curve": null,
+          "polygonCorners": []
+        },
+        {
+          "identifier": "6AB84300-FDA0-499B-B4FA-C9D2F89263DD",
+          "parentIdentifier": null,
+          "category": {
+            "wall": {}
+          },
+          "confidence": {
+            "high": {}
+          },
+          "dimensions": [
+            4.993577,
+            2.5,
+            0
+          ],
+          "transform": [
+            -0.99247986,
+            0,
+            0.12240783,
+            0,
+            0,
+            1,
+            0,
+            0,
+            -0.12240783,
+            0,
+            -0.99247986,
+            0,
+            3.4184821,
+            -0.13,
+            1.7889686,
+            1
+          ],
+          "story": 0,
+          "completedEdges": [],
+          "curve": null,
+          "polygonCorners": []
+        },
+        {
+          "identifier": "9CD38782-4772-4020-8EF0-267B55CBC8C6",
+          "parentIdentifier": null,
+          "category": {
+            "wall": {}
+          },
+          "confidence": {
+            "high": {}
+          },
+          "dimensions": [
+            4.0485082,
+            2.5,
+            0
+          ],
+          "transform": [
+            -0.12114862,
+            0,
+            -0.99263436,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0.99263436,
+            0,
+            -0.12114862,
+            0,
+            0.69184679,
+            -0.13,
+            0.083533876,
+            1
+          ],
+          "story": 0,
+          "completedEdges": [],
+          "curve": null,
+          "polygonCorners": []
+        }
+      ],
+      "doors": [
+        {
+          "identifier": "948C14DD-C65E-4457-B6F8-6584E9FD76BE",
+          "parentIdentifier": "8B42C835-484F-43E3-8248-C1E89AF9ED02",
+          "category": {
+            "door": {
+              "isOpen": false
+            }
+          },
+          "confidence": {
+            "high": {}
+          },
+          "dimensions": [
+            0.89999998,
+            2.05,
+            0
+          ],
+          "transform": [
+            0.99254614,
+            0,
+            -0.12186934,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0.12186934,
+            0,
+            0.99254614,
+            0,
+            1.4125462,
+            -0.35499999,
+            -2.0218694,
+            1
+          ],
+          "story": 0,
+          "completedEdges": [],
+          "curve": null,
+          "polygonCorners": []
+        }
+      ],
+      "windows": [
+        {
+          "identifier": "8A2B69D6-41AB-4F54-8BEC-DF3F486BC9B9",
+          "parentIdentifier": "6AB84300-FDA0-499B-B4FA-C9D2F89263DD",
+          "category": {
+            "window": {}
+          },
+          "confidence": {
+            "high": {}
+          },
+          "dimensions": [
+            1.4,
+            1.3,
+            0
+          ],
+          "transform": [
+            -0.99254614,
+            0,
+            0.12186934,
+            0,
+            0,
+            1,
+            0,
+            0,
+            -0.12186934,
+            0,
+            -0.99254614,
+            0,
+            3.8851159,
+            0.17,
+            1.7045766,
+            1
+          ],
+          "story": 0,
+          "completedEdges": [],
+          "curve": null,
+          "polygonCorners": []
+        }
+      ],
+      "openings": [],
+      "floors": [
+        {
+          "identifier": "C11E494C-B07F-4116-BB47-17682C4BD02B",
+          "parentIdentifier": null,
+          "category": {
+            "floor": {}
+          },
+          "confidence": {
+            "high": {}
+          },
+          "dimensions": [
+            5,
+            4,
+            0
+          ],
+          "transform": [
+            0.99254614,
+            0,
+            -0.12186934,
+            0,
+            -0.12186934,
+            0,
+            -0.99254614,
+            0,
+            0,
+            1,
+            0,
+            0,
+            3.1451042,
+            -1.38,
+            -0.21958105,
+            1
+          ],
+          "polygonCorners": [
+            [
+              -2.5,
+              2,
+              0
+            ],
+            [
+              2.5,
+              2,
+              0
+            ],
+            [
+              2.5,
+              -2,
+              0
+            ],
+            [
+              -2.5,
+              -2,
+              0
+            ]
+          ],
+          "completedEdges": [],
+          "curve": null,
+          "story": 0
+        }
+      ],
+      "objects": [
+        {
+          "identifier": "E4DA511F-B481-486C-8B23-3E00FE79B281",
+          "parentIdentifier": null,
+          "category": {
+            "sofa": {}
+          },
+          "confidence": {
+            "high": {}
+          },
+          "dimensions": [
+            2,
+            0.85000002,
+            0.94999999
+          ],
+          "transform": [
+            -0.12186934,
+            0,
+            -0.99254614,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0.99254614,
+            0,
+            -0.12186934,
+            0,
+            1.2096391,
+            -0.95499998,
+            0.018064164,
+            1
+          ],
+          "story": 0,
+          "attributes": {
+            "SofaType": "rectangular"
+          }
+        },
+        {
+          "identifier": "9BD1950E-4245-4CDD-BBDA-BB46A5379A6B",
+          "parentIdentifier": null,
+          "category": {
+            "table": {}
+          },
+          "confidence": {
+            "high": {}
+          },
+          "dimensions": [
+            1,
+            0.41999999,
+            0.55000001
+          ],
+          "transform": [
+            -0.12186934,
+            0,
+            -0.99254614,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0.99254614,
+            0,
+            -0.12186934,
+            0,
+            2.4503217,
+            -1.17,
+            -0.13427252,
+            1
+          ],
+          "story": 0,
+          "attributes": {
+            "TableType": "unidentified"
+          }
+        },
+        {
+          "identifier": "3B876D18-8AA1-46FB-AB5F-1C7373DF8F27",
+          "parentIdentifier": null,
+          "category": {
+            "table": {}
+          },
+          "confidence": {
+            "high": {}
+          },
+          "dimensions": [
+            1.4,
+            0.75,
+            0.80000001
+          ],
+          "transform": [
+            0.99254614,
+            0,
+            -0.12186934,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0.12186934,
+            0,
+            0.99254614,
+            0,
+            3.8172717,
+            -1.005,
+            -1.3096226,
+            1
+          ],
+          "story": 0,
+          "attributes": {
+            "TableType": "dining"
+          }
+        },
+        {
+          "identifier": "20BC307A-48F4-48B4-8A18-7ADB9C8C999A",
+          "parentIdentifier": null,
+          "category": {
+            "bed": {}
+          },
+          "confidence": {
+            "high": {}
+          },
+          "dimensions": [
+            1.6,
+            0.5,
+            2
+          ],
+          "transform": [
+            -0.99254614,
+            0,
+            0.12186934,
+            0,
+            0,
+            1,
+            0,
+            0,
+            -0.12186934,
+            0,
+            -0.99254614,
+            0,
+            4.3587742,
+            -1.13,
+            0.6389088,
+            1
+          ],
+          "story": 0,
+          "attributes": {}
+        },
+        {
+          "identifier": "CBEDAA24-F3E0-4B8D-925B-A514F124B0B0",
+          "parentIdentifier": null,
+          "category": {
+            "storage": {}
+          },
+          "confidence": {
+            "high": {}
+          },
+          "dimensions": [
+            0.44999999,
+            0.55000001,
+            0.40000001
+          ],
+          "transform": [
+            -0.99254614,
+            0,
+            0.12186934,
+            0,
+            0,
+            1,
+            0,
+            0,
+            -0.12186934,
+            0,
+            -0.99254614,
+            0,
+            5.5419769,
+            -1.105,
+            1.2492622,
+            1
+          ],
+          "story": 0,
+          "attributes": {
+            "StorageType": "cabinet"
+          }
+        },
+        {
+          "identifier": "F8F96C45-AC8B-4693-863C-2515EE9BD033",
+          "parentIdentifier": null,
+          "category": {
+            "storage": {}
+          },
+          "confidence": {
+            "medium": {}
+          },
+          "dimensions": [
+            1,
+            2,
+            0.60000002
+          ],
+          "transform": [
+            0.12186934,
+            0,
+            0.99254614,
+            0,
+            0,
+            1,
+            0,
+            0,
+            -0.99254614,
+            0,
+            0.12186934,
+            0,
+            5.211359,
+            -0.38,
+            -1.2792932,
+            1
+          ],
+          "story": 0,
+          "attributes": {
+            "StorageType": "cabinet"
+          }
+        },
+        {
+          "identifier": "6727500A-6407-4CD8-AFF5-DDCEBB54C5C0",
+          "parentIdentifier": null,
+          "category": {
+            "chair": {}
+          },
+          "confidence": {
+            "low": {}
+          },
+          "dimensions": [
+            0.80000001,
+            0.80000001,
+            0.80000001
+          ],
+          "transform": [
+            -0.78801078,
+            0,
+            -0.6156615,
+            0,
+            0,
+            1,
+            0,
+            0,
+            0.6156615,
+            0,
+            -0.78801078,
+            0,
+            1.814715,
+            -0.98000002,
+            1.253533,
+            1
+          ],
+          "story": 0,
+          "attributes": {}
+        }
+      ],
+      "sections": [
+        {
+          "label": "livingRoom",
+          "center": [
+            3.1451042,
+            -0.18000001,
+            -0.21958105
+          ],
+          "story": 0
+        }
+      ],
+      "referenceOriginTransform": [
+        0.99254614,
+        0,
+        -0.12186934,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0.12186934,
+        0,
+        0.99254614,
+        0,
+        0.41999999,
+        0,
+        -1.9,
+        1
+      ]
+    }
+  ],
+  "roomNames": [
+    "Séjour"
+  ]
+}

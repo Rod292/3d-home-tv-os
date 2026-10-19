@@ -1,0 +1,135 @@
+# Source de vérité du projet Xcode. Régénérer avec : `xcodegen generate` (dans apps/ios-home).
+name: Maison
+
+options:
+  bundleIdPrefix: com.example.appart3d
+  deploymentTarget:
+    iOS: "18.0"
+  createIntermediateGroups: true
+  developmentLanguage: fr
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""  # set your Apple team ID
+    CODE_SIGN_STYLE: Automatic
+    # Simulateur : signature locale ad hoc, aucun profil ni compte requis.
+    "CODE_SIGN_IDENTITY[sdk=iphonesimulator*]": "-"
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    TARGETED_DEVICE_FAMILY: "1,2"
+    LOCALIZATION_PREFERS_STRING_CATALOGS: YES
+
+targets:
+  Maison:
+    type: application
+    platform: iOS
+    sources:
+      - path: Maison
+      - path: Shared
+    entitlements:
+      path: Maison/Maison.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.example.appart3d
+    info:
+      path: Maison/Info.plist
+      properties:
+        CFBundleDisplayName: Maison
+        CFBundleDevelopmentRegion: fr
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSLocalNetworkUsageDescription: "Maison se connecte au pont domotique de votre Mac sur le Wi-Fi de la maison pour piloter vos lumières, la télé et le ventilateur."
+        NSCameraUsageDescription: "Maison utilise la caméra pour scanner le QR code d'appairage affiché par votre Mac."
+        NSBonjourServices:
+          - _appart3d._tcp
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+          NSAllowsArbitraryLoads: true
+          NSAllowsArbitraryLoadsInWebContent: true
+        UILaunchScreen:
+          UIColorName: LaunchBackground
+        UISupportedInterfaceOrientations~iphone:
+          - UIInterfaceOrientationPortrait
+        UISupportedInterfaceOrientations~ipad:
+          - UIInterfaceOrientationPortrait
+          - UIInterfaceOrientationPortraitUpsideDown
+          - UIInterfaceOrientationLandscapeLeft
+          - UIInterfaceOrientationLandscapeRight
+        UIUserInterfaceStyle: Dark
+        UIApplicationSupportsIndirectInputEvents: true
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.appart3d.home
+        PRODUCT_NAME: Maison
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ENABLE_PREVIEWS: YES
+    dependencies:
+      - target: MaisonWidgets
+        embed: true
+        codeSign: true
+
+  MaisonWidgets:
+    type: app-extension
+    platform: iOS
+    sources:
+      - path: MaisonWidgets
+      - path: Shared
+    entitlements:
+      path: MaisonWidgets/MaisonWidgets.entitlements
+      properties:
+        com.apple.security.application-groups:
+          - group.com.example.appart3d
+    info:
+      path: MaisonWidgets/Info.plist
+      properties:
+        CFBundleDisplayName: Maison
+        CFBundleDevelopmentRegion: fr
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSLocalNetworkUsageDescription: "Maison se connecte au pont domotique de votre Mac sur le Wi-Fi de la maison."
+        NSBonjourServices:
+          - _appart3d._tcp
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+          NSAllowsArbitraryLoads: true
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.widgetkit-extension
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.appart3d.home.widgets
+        PRODUCT_NAME: MaisonWidgets
+        SKIP_INSTALL: YES
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        ASSETCATALOG_COMPILER_WIDGET_BACKGROUND_COLOR_NAME: WidgetBackground
+
+  MaisonTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: MaisonTests
+    dependencies:
+      - target: Maison
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.appart3d.home.tests
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Maison.app/Maison
+        BUNDLE_LOADER: $(TEST_HOST)
+
+schemes:
+  Maison:
+    build:
+      targets:
+        Maison: all
+        MaisonTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - MaisonTests

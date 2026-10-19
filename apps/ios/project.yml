@@ -1,0 +1,73 @@
+# Source de vérité du projet Xcode. Régénérer avec : `xcodegen generate` (dans apps/ios).
+name: Appart3DScan
+
+options:
+  bundleIdPrefix: com.example.appart3d
+  deploymentTarget:
+    iOS: "17.0"
+  createIntermediateGroups: true
+  developmentLanguage: fr
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    # Laisser vide : chaque développeur choisit son équipe dans Xcode (Signing & Capabilities).
+    DEVELOPMENT_TEAM: ""  # set your Apple team ID
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+
+targets:
+  Appart3DScan:
+    type: application
+    platform: iOS
+    sources:
+      - path: Appart3DScan
+    info:
+      path: Appart3DScan/Info.plist
+      properties:
+        CFBundleDisplayName: Appart3D Scan
+        CFBundleDevelopmentRegion: fr
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSCameraUsageDescription: "Appart3D Scan utilise la caméra et le capteur LiDAR pour mesurer vos pièces et créer la maquette 3D de votre appartement."
+        UILaunchScreen:
+          UIColorName: ""
+        UISupportedInterfaceOrientations:
+          - UIInterfaceOrientationPortrait
+        UIFileSharingEnabled: true
+        LSSupportsOpeningDocumentsInPlace: true
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.appart3d.scan
+        PRODUCT_NAME: Appart3DScan
+        TARGETED_DEVICE_FAMILY: "1"
+        ENABLE_PREVIEWS: YES
+
+  Appart3DScanTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: Appart3DScanTests
+    dependencies:
+      - target: Appart3DScan
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.appart3d.scan.tests
+        GENERATE_INFOPLIST_FILE: YES
+
+schemes:
+  Appart3DScan:
+    build:
+      targets:
+        Appart3DScan: all
+        Appart3DScanTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - Appart3DScanTests

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Maison</string>
+    <string name="home_service_label">Maison : bouton Accueil</string>
+    <string name="home_service_description">Ouvre l\'écran d\'accueil Maison avec le bouton Accueil de la télécommande, à la place de l\'accueil Google TV.</string>
+</resources>

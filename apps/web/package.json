@@ -1,0 +1,17 @@
+{
+  "name": "@appart3d/web",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": { "dev": "vite", "build": "tsc -p . && vite build", "preview": "vite preview", "typecheck": "tsc -p .", "test": "vitest run" },
+  "dependencies": {
+    "@appart3d/scene": "workspace:*", "@appart3d/catalog": "workspace:*", "@appart3d/roomplan-import": "workspace:*", "@appart3d/home": "workspace:*",
+    "react": "^19.1.0", "react-dom": "^19.1.0", "three": "^0.180.0",
+    "@react-three/fiber": "^9.3.0", "@react-three/drei": "^10.7.0",
+    "zustand": "^5.0.0", "immer": "^10.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.9.0", "vitest": "^3.2.0", "vite": "^7.0.0", "@vitejs/plugin-react": "^5.0.0",
+    "@types/three": "^0.180.0", "@types/react": "^19.1.0", "@types/react-dom": "^19.1.0"
+  }
+}

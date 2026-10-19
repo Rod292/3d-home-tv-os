@@ -1,0 +1,88 @@
+# Source de vérité du projet Xcode. Régénérer avec : `xcodegen generate` (dans apps/macos).
+name: Appart3DMenuBar
+
+options:
+  bundleIdPrefix: com.example.appart3d
+  deploymentTarget:
+    macOS: "15.0"
+  createIntermediateGroups: true
+  developmentLanguage: fr
+
+settings:
+  base:
+    SWIFT_VERSION: "6.0"
+    SWIFT_STRICT_CONCURRENCY: complete
+    MARKETING_VERSION: "0.1.0"
+    CURRENT_PROJECT_VERSION: "1"
+    DEVELOPMENT_TEAM: ""  # set your Apple team ID
+    CODE_SIGN_STYLE: Automatic
+    ENABLE_USER_SCRIPT_SANDBOXING: YES
+    MACOSX_DEPLOYMENT_TARGET: "15.0"
+  configs:
+    # Debug : signature ad hoc pour compiler sans profil de provisionnement.
+    Debug:
+      CODE_SIGN_STYLE: Manual
+      CODE_SIGN_IDENTITY: "-"
+      DEVELOPMENT_TEAM: ""
+
+targets:
+  Appart3DMenuBar:
+    type: application
+    platform: macOS
+    sources:
+      - path: Appart3DMenuBar
+    info:
+      path: Appart3DMenuBar/Info.plist
+      properties:
+        CFBundleName: Appart3D
+        CFBundleDisplayName: Appart3D
+        CFBundleDevelopmentRegion: fr
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        LSApplicationCategoryType: public.app-category.utilities
+        LSMinimumSystemVersion: $(MACOSX_DEPLOYMENT_TARGET)
+        # Application de barre des menus : pas d'icône dans le Dock.
+        LSUIElement: true
+        NSHumanReadableCopyright: "© 3D Home TV OS contributors"
+        NSAppTransportSecurity:
+          NSAllowsLocalNetworking: true
+          NSAllowsArbitraryLoads: true
+          NSAllowsArbitraryLoadsInWebContent: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.appart3d.menubar
+        PRODUCT_NAME: Appart3D
+        PRODUCT_MODULE_NAME: Appart3DMenuBar
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ENABLE_HARDENED_RUNTIME: YES
+        ENABLE_APP_SANDBOX: NO
+        ENABLE_PREVIEWS: YES
+        COMBINE_HIDPI_IMAGES: YES
+
+  Appart3DMenuBarTests:
+    type: bundle.unit-test
+    platform: macOS
+    sources:
+      - path: Appart3DMenuBarTests
+    dependencies:
+      - target: Appart3DMenuBar
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.example.appart3d.menubar.tests
+        GENERATE_INFOPLIST_FILE: YES
+        # L'app s'appelle « Appart3D.app » (PRODUCT_NAME) et non le nom de la cible.
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/Appart3D.app/Contents/MacOS/Appart3D
+        BUNDLE_LOADER: $(TEST_HOST)
+
+schemes:
+  Appart3DMenuBar:
+    build:
+      targets:
+        Appart3DMenuBar: all
+        Appart3DMenuBarTests: [test]
+    run:
+      config: Debug
+    test:
+      config: Debug
+      targets:
+        - Appart3DMenuBarTests
