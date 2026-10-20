@@ -31,6 +31,6 @@ jobs:
         with:
           distribution: temurin
           java-version: 17
-      - uses: android-actions/setup-android@v3
-      - run: sdkmanager "platforms;android-35" "build-tools;35.0.0"
+      # GitHub's Ubuntu runners ship the Android SDK (ANDROID_HOME); add the platform this app targets.
+      - run: yes | "$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-35" "build-tools;35.0.0" > /dev/null
       - run: ./gradlew assembleRelease --no-daemon
