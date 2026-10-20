@@ -27,6 +27,8 @@ export function parseEmbedCommand(raw: unknown): EmbedCommand | null {
       return idOrNull(c.itemId) ? { type: "focusItem", itemId: c.itemId } : null;
     case "highlightDevice":
       return idOrNull(c.deviceId) ? { type: "highlightDevice", deviceId: c.deviceId } : null;
+    case "spotlightDevice":
+      return idOrNull(c.deviceId) ? { type: "spotlightDevice", deviceId: c.deviceId } : null;
     case "setNight":
       return typeof c.night === "boolean" ? { type: "setNight", night: c.night } : null;
     case "setDaylight":
@@ -372,10 +374,62 @@ export const FLIGHT_OUT_S = 1.6;
 /** Changes closer than this are one burst (scene, "all off"): pull back to the whole apartment instead. */
 export const FLIGHT_BURST_MS = 600;
 
+interface WallLike {
+  id?: string;
+  start: readonly [number, number];
+  end: readonly [number, number];
+  height: number;
+}
+
+/**
+ * Azimuth from which `target` is seen with no wall in between, as close as possible to `preferred`
+ * (tries every `step` both ways). The camera sits at target + (sinφ·sinθ, cosφ, sinφ·cosθ) (three.js
+ * spherical, φ = polar): the line of sight rises 1/tan(φ) per horizontal meter, so a wall blocks it
+ * when the sight line is still under the wall's top where it crosses it. `heightAt` gives the height a
+ * wall really has from that angle (the dollhouse view lowers the walls facing the camera).
+ */
+export function clearAzimuth(
+  target: readonly [number, number, number],
+  walls: readonly WallLike[],
+  preferred: number,
+  polar: number,
+  heightAt: (wall: WallLike, az: number) => number = (w) => w.height,
+  step = Math.PI / 18,
+): number {
+  const rise = 1 / Math.tan(polar);
+  const blocked = (az: number) => {
+    const dx = Math.sin(az);
+    const dz = Math.cos(az);
+    for (const w of walls) {
+      const ex = w.end[0] - w.start[0];
+      const ez = w.end[1] - w.start[1];
+      const det = ex * dz - dx * ez;
+      if (Math.abs(det) < 1e-9) continue;
+      const qx = w.start[0] - target[0];
+      const qz = w.start[1] - target[2];
+      const s = (ex * qz - ez * qx) / det; // horizontal distance along the sight line
+      const u = (dx * qz - dz * qx) / det; // position along the wall
+      if (s <= 0.12 || u < 0 || u > 1) continue; // behind, or the wall the item sits against
+      if (target[1] + s * rise < heightAt(w, az)) return true;
+    }
+    return false;
+  };
+  const turns = Math.ceil(Math.PI / step);
+  for (let k = 0; k <= turns; k++) {
+    for (const sign of k ? [1, -1] : [1]) {
+      const az = preferred + sign * k * step;
+      if (!blocked(az)) return az;
+    }
+  }
+  return preferred;
+}
+
 export function flightTarget(item: Pick<ItemLike, "position" | "dimensions">): { target: [number, number, number]; size: number } {
   const [x, y, z] = item.position;
   const [w, h, d] = item.dimensions;
-  return { target: [x, Math.min(1.2, y + h * 0.6), z], size: Math.max(w, d, h * 0.8) + 3.4 };
+  // Low items: aim at most 1.2 m high (the lit floor around them counts); hanging ones (pendants,
+  // ceiling fans) stay in the frame: aim at least at their lower third.
+  return { target: [x, Math.min(y + h * 0.6, Math.max(1.2, y + h * 0.3)), z], size: Math.max(w, d, h * 0.8) + 3.4 };
 }
 
 /**

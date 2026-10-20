@@ -30,6 +30,8 @@ class LightsPanel(
     private val onToggle: (Lamp) -> Unit,
     private val onBrightness: (Lamp, Int) -> Unit,
     private val onFanSpeed: (Lamp, Int) -> Unit,
+    /** The selected lamp (null: none), shown in the 3D before it is toggled. */
+    private val onSpotlight: (Lamp?) -> Unit,
     private val onScene: (Scene) -> Unit,
     private val onAllOff: () -> Unit,
 ) : LinearLayout(context) {
@@ -44,7 +46,7 @@ class LightsPanel(
         background = Glass(dp(28).toFloat(), dp(1.5f).toFloat())
         setPadding(dp(8), dp(18), dp(8), dp(12))
         addView(TextView(context).apply {
-            text = "Lumières"
+            text = context.getString(R.string.lights_title)
             setTextColor(Color.WHITE)
             textSize = 20f
             typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
@@ -89,7 +91,7 @@ class LightsPanel(
         if (shown.map { it.id } == sceneIds && pills.childCount > 0) return
         sceneIds = shown.map { it.id }
         pills.removeAllViews()
-        addPill("Tout éteindre", onAllOff)
+        addPill(context.getString(R.string.all_off), onAllOff)
         for (scene in shown) addPill(scene.name) { onScene(scene) }
     }
 
@@ -146,10 +148,9 @@ class LightsPanel(
     private fun updateSubtitle() {
         val on = rows.values.count { it.lamp.on == true }
         subtitle.text = when {
-            rows.isEmpty() -> "Aucune lampe"
-            on == 0 -> "Tout est éteint"
-            on == 1 -> "1 allumée"
-            else -> "$on allumées"
+            rows.isEmpty() -> context.getString(R.string.no_lamp)
+            on == 0 -> context.getString(R.string.all_lights_off)
+            else -> resources.getQuantityString(R.plurals.lights_on, on, on)
         }
     }
 
@@ -221,6 +222,9 @@ class LightsPanel(
                 focused = f
                 v.animate().scaleX(if (f) 1.05f else 1f).scaleY(if (f) 1.05f else 1f).translationZ(if (f) dp(10).toFloat() else 0f).setDuration(160).start()
                 paint()
+                if (f) onSpotlight(lamp)
+                // Left for another row: that row reports itself; left the lamps: nothing selected.
+                else v.post { if (rows.values.none { it.view.hasFocus() }) onSpotlight(null) }
             }
         }
 
@@ -238,9 +242,9 @@ class LightsPanel(
             dot.setImageResource(if (l.fanSpeed != null) R.drawable.ic_fan else R.drawable.ic_bulb)
             if (l.fanSpeed != null) spin(l.fanSpeed)
             room.text = when {
-                !l.reachable || l.on == null -> "Injoignable"
-                l.fanSpeed != null -> if (l.fanSpeed > 0) "${l.room} · vitesse ${l.fanSpeed}" else "${l.room} · arrêté"
-                l.on == true && l.brightness != null -> "${l.room} · ${l.brightness} %"
+                !l.reachable || l.on == null -> context.getString(R.string.unreachable)
+                l.fanSpeed != null -> if (l.fanSpeed > 0) context.getString(R.string.fan_speed, l.room, l.fanSpeed) else context.getString(R.string.fan_stopped, l.room)
+                l.on == true && l.brightness != null -> context.getString(R.string.room_brightness, l.room, l.brightness)
                 else -> l.room
             }
             val fraction = when {

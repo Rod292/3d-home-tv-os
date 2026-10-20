@@ -30,6 +30,9 @@ the real lamp), say so explicitly and ask them.
 - [ ] Home from inside an app returns to the launcher — **with the physical remote**.
 - [ ] Accessibility service still enabled after reinstalling the APK (G2).
 - [ ] Screensaver shows the 3D (G10); inactivity delay restored to its original value.
+- [ ] Selecting a lamp in the panel outlines it in the 3D, seen without a wall in front.
+- [ ] Crash tests: `--ez crash3d true` → the 3D comes back, same PID; `--ez crashApp true` ×3 → Home
+      opens the stock home, then ours again after 2 minutes (gotchas G15, G16).
 - [ ] The person knows how to undo (`recovery.md`).
 
 ## 5 — Phone / desktop

@@ -3,8 +3,8 @@
 An Android app (Kotlin, framework views, no AndroidX) that replaces the TV home screen:
 
 - the live 3D apartment on top (the bridge's `?view=3d&lite=1&orbit=full&tilt=64&maxDpr=1.5`),
-- a glass **Lumières** panel: OK toggles a lamp, ← / → dims it (or sets the ceiling fan speed 0–6),
-  scene pills (Tout éteindre, Lumineux, Cosy, Film, Nuit) — live state over SSE,
+- a glass **Lights** panel: selecting a lamp outlines it in the 3D; OK toggles it, ← / → dims it (or sets the ceiling fan speed 0–6),
+  scene pills ("All off" + the scenes the bridge defines) — live state over SSE,
 - a dock with only the chosen apps, clock + weather (Open-Meteo, no key), a background that follows
   the sun, and a screensaver (`MaisonDream`).
 
@@ -40,4 +40,6 @@ Build prerequisites: JDK 17, Android SDK platform 35 + build-tools 35, `local.pr
 | `Apps.kt` | Dock (labels set over ADB, aliases per region) |
 | `Weather.kt` | Open-Meteo + colored glyphs |
 | `HomeButtonService.kt`, `HomeButtonGuard.kt` | Home key takeover + self-re-enable (gotchas G1, G2) |
+| `CrashGuard.kt` | Crash loop → the Home key goes back to the stock home (gotcha G16) |
+| `res/values*/strings.xml` | UI text: English default, French (`values-fr`); add a folder per language |
 | `MaisonDream.kt` | Screensaver |

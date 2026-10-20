@@ -1,0 +1,23 @@
+name: Bug
+description: Something in the reference implementation or the playbook is wrong.
+labels: [bug]
+body:
+  - type: input
+    id: where
+    attributes:
+      label: Where
+      placeholder: "apps/tv-launcher, playbook/03-bridge.md, …"
+    validations:
+      required: true
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened vs what you expected
+      description: Include the command and its output or a logcat excerpt. Never paste tokens, pair codes or your scan.
+    validations:
+      required: true
+  - type: input
+    id: env
+    attributes:
+      label: Environment
+      placeholder: "TV model, Node version, macOS / Linux…"

@@ -13,14 +13,21 @@ import android.view.accessibility.AccessibilityEvent
  * Only events from the stock launcher are delivered (packageNames in the service config).
  */
 class HomeButtonService : AccessibilityService() {
+    override fun onServiceConnected() {
+        super.onServiceConnected()
+        CrashGuard.install(this)
+    }
+
     override fun onKeyEvent(event: KeyEvent): Boolean {
         if (event.keyCode != KeyEvent.KEYCODE_HOME) return false
+        // Maison keeps crashing: let the stock home answer the Home key (CrashGuard).
+        if (CrashGuard.crashLooping(this)) return false
         if (event.action == KeyEvent.ACTION_UP && !event.isCanceled) openHome()
         return true
     }
 
     override fun onAccessibilityEvent(event: AccessibilityEvent) {
-        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && event.packageName == STOCK_HOME) openHome()
+        if (event.eventType == AccessibilityEvent.TYPE_WINDOW_STATE_CHANGED && event.packageName == STOCK_HOME && !CrashGuard.crashLooping(this)) openHome()
     }
 
     override fun onInterrupt() {}

@@ -1,8 +1,10 @@
 # 04 — The TV: replace the home screen (Google TV / Android TV)
 
 `apps/tv-launcher` is a small Android app (Kotlin, no AndroidX): the live 3D on top (the bridge's
-`?view=3d`), a glass "Lumières" panel (OK toggles, ← / → dims or sets the fan speed, scene pills), a
-dock of chosen apps, clock + weather, and a screensaver. Read gotchas **G1–G5** first.
+`?view=3d`), a glass lights panel (selecting a lamp outlines it in the 3D and flies the camera there;
+OK toggles, ← / → dims or sets the fan speed; scene pills), a dock of chosen apps, clock + weather,
+and a screensaver. Its UI follows the TV's language (English by default, French included — add a
+`res/values-<lang>/strings.xml` for more). Read gotchas **G1–G5** first.
 
 **Ask the person before each TV step below**, say what it changes and how to undo it
 ([`recovery.md`](recovery.md)).
@@ -72,7 +74,16 @@ TV_HOST=<tv-ip> apps/tv-launcher/scripts/tv.sh shell settings put secure screens
 It starts after the TV's inactivity delay (`settings get system screen_off_timeout`, ms). To test
 quickly, lower it to 15000, check, then **restore the original value**.
 
-## 7. Verify on the real TV
+## 7. Robustness — keep basic TV controls no matter what
+
+- The 3D runs in a WebView; if its renderer dies, the WebView is replaced and the 3D reloads while the
+  dock, the lights panel and the Home key keep working (gotcha G15).
+- If the app itself crash-loops, the Home key goes back to the stock Google TV home until things calm
+  down (gotcha G16). The stock launcher is never disabled, so it is always there.
+- When you add a feature to the launcher, run both crash tests again (`--ez crash3d true`,
+  `--ez crashApp true` ×3) before calling it done.
+
+## 8. Verify on the real TV
 
 - Screenshot: `tv.sh shell screencap -p /data/local/tmp/s.png && tv.sh shell cat /data/local/tmp/s.png > s.png`.
 - Home from inside an app returns to the launcher: `tv.sh shell dumpsys activity activities | grep topResumedActivity`.

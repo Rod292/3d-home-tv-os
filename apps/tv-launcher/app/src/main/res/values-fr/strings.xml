@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Maison</string>
+    <string name="home_service_label">Maison : bouton Accueil</string>
+    <string name="home_service_description">Ouvre l\'écran d\'accueil Maison avec le bouton Accueil de la télécommande, à la place de l\'accueil Google TV.</string>
+
+    <string name="lights_title">Lumières</string>
+    <string name="all_off">Tout éteindre</string>
+    <string name="no_lamp">Aucune lampe</string>
+    <string name="all_lights_off">Tout est éteint</string>
+    <plurals name="lights_on">
+        <item quantity="one">%d allumée</item>
+        <item quantity="other">%d allumées</item>
+    </plurals>
+    <string name="unreachable">Injoignable</string>
+    <string name="fan_speed">%1$s · vitesse %2$d</string>
+    <string name="fan_stopped">%1$s · arrêté</string>
+    <string name="room_brightness">%1$s · %2$d %%</string>
+    <string name="settings">Réglages</string>
+
+    <string name="searching_bridge">Recherche de la maison sur le Wi-Fi…</string>
+    <string name="bridge_unreachable">Maison injoignable</string>
+    <string name="bridge_unreachable_status">Maison injoignable (%d)</string>
+    <string name="bridge_unreachable_reason">Maison injoignable : %s</string>
+    <string name="network_error">erreur réseau</string>
+    <string name="tv_not_paired">TV non associée à la maison</string>
+    <string name="restarting_3d">La 3D redémarre…</string>
+    <string name="command_failed">%s : commande impossible</string>
+    <string name="setting_failed">%s : réglage impossible</string>
+    <string name="scene_failed">Scène %s : échec</string>
+    <string name="cannot_open_app">Impossible d\'ouvrir cette application.</string>
+
+    <string name="pair_title">Associer la TV à la maison</string>
+    <string name="pair_hint">Tapez le code à 6 chiffres du pont maison\n(sur l\'ordinateur qui le fait tourner : pnpm --filter @appart3d/home-bridge pair)</string>
+    <string name="pair_ok">Valider</string>
+    <string name="pair_code_length">Le code fait 6 chiffres.</string>
+    <string name="pair_no_bridge">Maison introuvable sur le Wi-Fi pour l\'instant…</string>
+    <string name="pairing">Association…</string>
+    <string name="pair_wrong_code">Code incorrect.</string>
+
+    <string name="sky_sunny">Ensoleillé</string>
+    <string name="sky_clear">Dégagé</string>
+    <string name="sky_partly">Éclaircies</string>
+    <string name="sky_cloudy">Nuageux</string>
+    <string name="sky_fog">Brouillard</string>
+    <string name="sky_rain">Pluie</string>
+    <string name="sky_snow">Neige</string>
+    <string name="sky_storm">Orage</string>
+</resources>

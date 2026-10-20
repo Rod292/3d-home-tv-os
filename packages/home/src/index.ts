@@ -252,6 +252,11 @@ export const BONJOUR_SERVICE = "_appart3d._tcp";
 export type EmbedCommand =
   | { type: "focusItem"; itemId: string | null }
   | { type: "highlightDevice"; deviceId: string | null }
+  /**
+   * Halo on the device's item and the camera flies to it, from an angle with no wall in front, and
+   * stays there (null: back to the default framing). The TV sends it while a lamp is selected.
+   */
+  | { type: "spotlightDevice"; deviceId: string | null }
   | { type: "setNight"; night: boolean }
   /** Follow the sun (auto) or force day / night (setNight still works = day / night). */
   | { type: "setDaylight"; mode: DaylightMode }

@@ -12,6 +12,7 @@ import {
   parseOrbit,
   parseTilt,
   centroid,
+  clearAzimuth,
 } from "../src/lib/embed";
 
 const dev = (id: string, itemId?: string) => ({ id, itemId }) as unknown as Device;
@@ -76,5 +77,42 @@ describe("orbit / tilt params", () => {
 describe("centroid", () => {
   it("is the area center of a polygon", () => {
     expect(centroid([[0, 0], [4, 0], [4, 2], [0, 2]])).toEqual([2, 1]);
+  });
+});
+
+describe("clearAzimuth", () => {
+  // A 4 × 4 m room with a full-height partition (2.6 m) 1 m north of a lamp, along x.
+  const partition = { id: "p", start: [0, 0] as const, end: [4, 0] as const, height: 2.6 };
+  const far = { id: "far", start: [0, 9] as const, end: [4, 9] as const, height: 2.6 };
+  const lamp = [2, 1, 1] as const;
+  const polar = 1.13;
+
+  it("keeps the preferred angle when nothing is in the way", () => {
+    // Toward +z the only wall is 8 m away: the sight line (rising ≈ 0.47 m/m) clears it.
+    expect(clearAzimuth(lamp, [partition, far], 0, polar)).toBe(0);
+  });
+
+  it("turns away from a wall right in front of the item, as little as possible", () => {
+    // Toward −z the partition is 1 m away: the sight line is at ≈ 1.47 m, under 2.6 m.
+    const az = clearAzimuth(lamp, [partition], Math.PI, polar);
+    expect(az).not.toBe(Math.PI);
+    // Nearest clear angle: the sight line passes beyond the end of the partition (x > 4 m at z = 0).
+    const s = -1 / Math.cos(az);
+    expect(lamp[0] + s * Math.sin(az) > 4 || lamp[0] + s * Math.sin(az) < 0).toBe(true);
+  });
+
+  it("uses the height the dollhouse view gives the wall from that angle", () => {
+    // Lowered to 0.35 m (wall facing the camera): no longer in the way.
+    expect(clearAzimuth(lamp, [partition], Math.PI, polar, () => 0.35)).toBe(Math.PI);
+  });
+
+  it("ignores the wall the item is mounted on", () => {
+    const onWall = [2, 1.3, 0.1] as const;
+    expect(clearAzimuth(onWall, [partition], 0, polar)).toBe(0);
+  });
+
+  it("parses the spotlight command", () => {
+    expect(parseEmbedCommand({ type: "spotlightDevice", deviceId: "hue:light:3" })).toEqual({ type: "spotlightDevice", deviceId: "hue:light:3" });
+    expect(parseEmbedCommand({ type: "spotlightDevice", deviceId: null })).toEqual({ type: "spotlightDevice", deviceId: null });
   });
 });

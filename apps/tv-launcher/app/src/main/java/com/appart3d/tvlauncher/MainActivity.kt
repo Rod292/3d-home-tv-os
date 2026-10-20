@@ -29,6 +29,7 @@ import android.util.Log
 import android.webkit.ConsoleMessage
 import android.webkit.CookieManager
 import android.webkit.JavascriptInterface
+import android.webkit.RenderProcessGoneDetail
 import android.webkit.WebChromeClient
 import android.webkit.WebResourceError
 import android.webkit.WebResourceRequest
@@ -90,6 +91,7 @@ class MainActivity : Activity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        CrashGuard.install(this)
         store = BridgeStore(this)
         catalog = AppCatalog(this)
         discovery = BridgeDiscovery(this, ::onBridgeFound)
@@ -150,6 +152,18 @@ class MainActivity : Activity() {
 
     /** `--es bridge <url> --es pairCode <code>` from ADB. True when it handled a pairing. */
     private fun handleProvisioning(intent: Intent?): Boolean {
+        // Test hook (ADB only): `--ez crashApp true` crashes the app itself (checks CrashGuard).
+        if (intent?.getBooleanExtra("crashApp", false) == true) {
+            intent.removeExtra("crashApp")
+            main.post { throw IllegalStateException("crashApp test hook") }
+            return true
+        }
+        // Test hook (ADB only): `--ez crash3d true` crashes the 3D renderer to check the app survives it.
+        if (intent?.getBooleanExtra("crash3d", false) == true) {
+            intent.removeExtra("crash3d")
+            web.loadUrl("chrome://crash")
+            return true
+        }
         // `--ef lat <deg> --ef lon <deg>`: where to read the weather. `--es dock "YouTube,Netflix,Plex"`: the dock's apps.
         if (intent?.hasExtra("lat") == true && intent.hasExtra("lon")) {
             WeatherSource.setPlace(this, intent.getFloatExtra("lat", 0f).toDouble(), intent.getFloatExtra("lon", 0f).toDouble())
@@ -195,7 +209,7 @@ class MainActivity : Activity() {
         main.removeCallbacks(retry)
         val base = store.url
         if (base == null) {
-            showHeroMessage("Recherche de la maison sur le Wi-Fi…")
+            showHeroMessage(getString(R.string.searching_bridge))
             if (store.token == null) showPairing()
             return
         }
@@ -258,7 +272,7 @@ class MainActivity : Activity() {
             main.post {
                 result.onSuccess { it?.let(lights::update) }.onFailure {
                     lights.update(lamp)
-                    toast("${lamp.name} : commande impossible")
+                    toast(getString(R.string.command_failed, lamp.name))
                 }
             }
         }
@@ -274,7 +288,7 @@ class MainActivity : Activity() {
             pendingDim.remove(lamp.id)
             io.execute {
                 val result = runCatching { HomeFeed.brightness(base, token, lamp, value) }
-                main.post { result.onFailure { toast("${lamp.name} : réglage impossible") } }
+                main.post { result.onFailure { toast(getString(R.string.setting_failed, lamp.name)) } }
             }
         }
         pendingDim[lamp.id] = send
@@ -291,11 +305,31 @@ class MainActivity : Activity() {
             pendingDim.remove(lamp.id)
             io.execute {
                 val result = runCatching { HomeFeed.fanSpeed(base, token, lamp, step) }
-                main.post { result.onFailure { toast("Ventilateur : réglage impossible") } }
+                main.post { result.onFailure { toast(getString(R.string.setting_failed, lamp.name)) } }
             }
         }
         pendingDim[lamp.id] = send
         main.postDelayed(send, 350)
+    }
+
+    /**
+     * The remote is on a lamp: outline it in the 3D and fly there (from an angle with no wall in front)
+     * so guests know which lamp it is before toggling. Sent 150 ms after the focus settles.
+     */
+    private fun spotlight(lamp: Lamp?) {
+        main.removeCallbacks(sendSpotlight)
+        pendingSpotlight = lamp?.id
+        main.postDelayed(sendSpotlight, 150)
+    }
+
+    private var pendingSpotlight: String? = null
+    private var sentSpotlight: String? = null
+    private val sendSpotlight = Runnable {
+        val id = pendingSpotlight
+        if (id == sentSpotlight) return@Runnable
+        sentSpotlight = id
+        val cmd = JSONObject().put("type", "spotlightDevice").put("deviceId", id ?: JSONObject.NULL)
+        web.evaluateJavascript("window.appart3dEmbed && window.appart3dEmbed.post($cmd)", null)
     }
 
     private fun runScene(scene: Scene) {
@@ -303,7 +337,7 @@ class MainActivity : Activity() {
         val token = store.token ?: return
         io.execute {
             val result = runCatching { HomeFeed.scene(base, token, scene.id) }
-            main.post { result.onFailure { toast("Scène ${scene.name} : échec") } }
+            main.post { result.onFailure { toast(getString(R.string.scene_failed, scene.name)) } }
         }
     }
 
@@ -318,24 +352,24 @@ class MainActivity : Activity() {
         store.token = null
         loadedUrl = null
         web.alpha = 0f
-        showHeroMessage("TV non associée à la maison")
+        showHeroMessage(getString(R.string.tv_not_paired))
         showPairing()
     }
 
     private fun submitCode(raw: String) {
         val code = raw.filter(Char::isDigit)
-        if (code.length != 6) return setPairStatus("Le code fait 6 chiffres.")
-        val base = store.url ?: return setPairStatus("Maison introuvable sur le Wi-Fi pour l'instant…")
-        setPairStatus("Association…")
+        if (code.length != 6) return setPairStatus(getString(R.string.pair_code_length))
+        val base = store.url ?: return setPairStatus(getString(R.string.pair_no_bridge))
+        setPairStatus(getString(R.string.pairing))
         io.execute {
             val result = runCatching { BridgeApi.pair(base, code, "TV ${Build.MODEL}") }
             main.post {
                 result.onSuccess { token ->
-                    if (token == null) return@onSuccess setPairStatus("Code incorrect.")
+                    if (token == null) return@onSuccess setPairStatus(getString(R.string.pair_wrong_code))
                     store.token = token
                     hidePairing()
                     reconnect()
-                }.onFailure { setPairStatus("Maison injoignable : ${it.message ?: "erreur réseau"}") }
+                }.onFailure { setPairStatus(getString(R.string.bridge_unreachable_reason, it.message ?: getString(R.string.network_error))) }
             }
         }
     }
@@ -353,7 +387,7 @@ class MainActivity : Activity() {
                     }
                     "error" -> {
                         val text = msg.optString("message")
-                        if (text.startsWith("Accès refusé")) unauthorized() else heroFailed(text.ifEmpty { "Maison injoignable" })
+                        if (text.startsWith("Accès refusé")) unauthorized() else heroFailed(text.ifEmpty { getString(R.string.bridge_unreachable) })
                     }
                 }
             }
@@ -378,39 +412,11 @@ class MainActivity : Activity() {
             gravity = Gravity.CENTER
         }
         hero.addView(heroMessage, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
-        web = WebView(this).apply {
-            setBackgroundColor(Color.TRANSPARENT)
-            alpha = 0f
-            defaultFocusHighlightEnabled = false
-            isFocusable = false
-            isFocusableInTouchMode = false
-            overScrollMode = View.OVER_SCROLL_NEVER
-            isVerticalScrollBarEnabled = false
-            isHorizontalScrollBarEnabled = false
-            settings.javaScriptEnabled = true
-            settings.domStorageEnabled = true
-            addJavascriptInterface(EmbedBridge(), "appart3dAndroid")
-            // `?stats=1` lines from the 3D (tuning): relayed to logcat, tag "Maison".
-            webChromeClient = object : WebChromeClient() {
-                override fun onConsoleMessage(m: ConsoleMessage): Boolean {
-                    if (m.message().startsWith("[appart3d-stats]")) Log.i("Maison", m.message())
-                    return true
-                }
-            }
-            webViewClient = object : WebViewClient() {
-                override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
-                    if (request.isForMainFrame) heroFailed("Maison injoignable")
-                }
-                override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, response: WebResourceResponse) {
-                    if (!request.isForMainFrame) return
-                    if (response.statusCode == 401) unauthorized() else heroFailed("Maison injoignable (${response.statusCode})")
-                }
-            }
-        }
+        web = createWeb()
         hero.addView(web, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply {
             leftMargin = dp(SIDE + PANEL_W)
         })
-        lights = LightsPanel(this, ::toggle, ::dim, ::fanSpeed, ::runScene, ::allOff)
+        lights = LightsPanel(this, ::toggle, ::dim, ::fanSpeed, ::spotlight, ::runScene, ::allOff)
         hero.addView(lights, FrameLayout.LayoutParams(dp(PANEL_W), ViewGroup.LayoutParams.MATCH_PARENT).apply {
             leftMargin = dp(SIDE)
             topMargin = dp(28)
@@ -473,6 +479,62 @@ class MainActivity : Activity() {
         return root
     }
 
+    /** The 3D view. Recreated from scratch when its renderer dies (see onRenderProcessGone). */
+    @SuppressLint("SetJavaScriptEnabled")
+    private fun createWeb(): WebView = WebView(this).apply {
+            setBackgroundColor(Color.TRANSPARENT)
+            alpha = 0f
+            defaultFocusHighlightEnabled = false
+            isFocusable = false
+            isFocusableInTouchMode = false
+            overScrollMode = View.OVER_SCROLL_NEVER
+            isVerticalScrollBarEnabled = false
+            isHorizontalScrollBarEnabled = false
+            settings.javaScriptEnabled = true
+            settings.domStorageEnabled = true
+            addJavascriptInterface(EmbedBridge(), "appart3dAndroid")
+            // `?stats=1` lines from the 3D (tuning): relayed to logcat, tag "Maison".
+            webChromeClient = object : WebChromeClient() {
+                override fun onConsoleMessage(m: ConsoleMessage): Boolean {
+                    if (m.message().startsWith("[appart3d-stats]")) Log.i("Maison", m.message())
+                    return true
+                }
+            }
+            webViewClient = object : WebViewClient() {
+                /**
+                 * The 3D's renderer crashed or was killed for memory. Unhandled, Android kills the whole
+                 * app — dock, lights panel and Home key with it. Replace the WebView, keep the rest up.
+                 */
+                override fun onRenderProcessGone(view: WebView, detail: RenderProcessGoneDetail): Boolean {
+                    Log.w("Maison", "3D renderer gone (crash=${detail.didCrash()}), recreating it")
+                    main.post { replaceWeb(view) }
+                    return true
+                }
+                override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
+                    if (request.isForMainFrame) heroFailed(getString(R.string.bridge_unreachable))
+                }
+                override fun onReceivedHttpError(view: WebView, request: WebResourceRequest, response: WebResourceResponse) {
+                    if (!request.isForMainFrame) return
+                    if (response.statusCode == 401) unauthorized() else heroFailed(getString(R.string.bridge_unreachable_status, response.statusCode))
+                }
+            }
+        }
+
+    private fun replaceWeb(dead: WebView) {
+        if (dead !== web) return
+        val parent = dead.parent as? ViewGroup ?: return
+        val index = parent.indexOfChild(dead)
+        val lp = dead.layoutParams
+        parent.removeView(dead)
+        dead.destroy()
+        web = createWeb()
+        parent.addView(web, index, lp)
+        loadedUrl = null
+        sentSpotlight = null
+        showHeroMessage(getString(R.string.restarting_3d))
+        main.postDelayed({ reconnect() }, 3000)
+    }
+
     private fun showApps() {
         appsDirty = false
         val focusedPkg = currentFocus?.tag as? String
@@ -480,7 +542,7 @@ class MainActivity : Activity() {
         val tileW = dp(TILE_W)
         val tiles = catalog.load().map { app ->
             tile(app.pkg, app.label, app.banner, app.icon, tileW, tileW * 9 / 16) { launch(app.pkg) }
-        } + tile(SETTINGS_TAG, "Réglages", null, getDrawable(android.R.drawable.ic_menu_preferences), tileW * 9 / 16, tileW * 9 / 16) {
+        } + tile(SETTINGS_TAG, getString(R.string.settings), null, getDrawable(android.R.drawable.ic_menu_preferences), tileW * 9 / 16, tileW * 9 / 16) {
             start(Intent(Settings.ACTION_SETTINGS).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK))
         }
         tiles.forEachIndexed { i, t ->
@@ -544,7 +606,7 @@ class MainActivity : Activity() {
     }
 
     private fun launch(pkg: String) {
-        val intent = catalog.launchIntent(pkg) ?: return toast("Impossible d'ouvrir cette application.")
+        val intent = catalog.launchIntent(pkg) ?: return toast(getString(R.string.cannot_open_app))
         start(intent)
     }
 
@@ -552,9 +614,9 @@ class MainActivity : Activity() {
         try {
             startActivity(intent)
         } catch (_: ActivityNotFoundException) {
-            toast("Impossible d'ouvrir cette application.")
+            toast(getString(R.string.cannot_open_app))
         } catch (_: SecurityException) {
-            toast("Impossible d'ouvrir cette application.")
+            toast(getString(R.string.cannot_open_app))
         }
     }
 
@@ -565,13 +627,13 @@ class MainActivity : Activity() {
 
     private fun buildPairPanel(): FrameLayout {
         val title = TextView(this).apply {
-            text = "Associer la TV à la maison"
+            text = getString(R.string.pair_title)
             setTextColor(Color.WHITE)
             textSize = 28f
             gravity = Gravity.CENTER
         }
         val hint = TextView(this).apply {
-            text = "Tapez le code à 6 chiffres du pont maison\n(sur le Mac : pnpm --filter @appart3d/home-bridge pair)"
+            text = getString(R.string.pair_hint)
             setTextColor(0xB3FFFFFF.toInt())
             textSize = 16f
             gravity = Gravity.CENTER
@@ -601,7 +663,7 @@ class MainActivity : Activity() {
             gravity = Gravity.CENTER
         }
         val ok = Button(this).apply {
-            text = "Valider"
+            text = getString(R.string.pair_ok)
             setOnClickListener { submitCode(pairInput.text.toString()) }
         }
         val column = LinearLayout(this).apply {
@@ -624,7 +686,7 @@ class MainActivity : Activity() {
 
     private fun showPairing() {
         if (pairPanel.visibility == View.VISIBLE) return
-        pairStatus.text = if (store.url == null) "Recherche de la maison sur le Wi-Fi…" else ""
+        pairStatus.text = if (store.url == null) getString(R.string.searching_bridge) else ""
         pairPanel.visibility = View.VISIBLE
         pairInput.requestFocus()
     }

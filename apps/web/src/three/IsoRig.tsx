@@ -5,7 +5,8 @@ import { OrbitControls } from "@react-three/drei";
 import { useStore } from "../state/store";
 import { useHome } from "../state/home";
 import { useEmbed } from "../state/embed";
-import { AUTO_ROTATE_SPEED, embedFitZoom, FLIGHT_HOLD_S, FLIGHT_IN_S, FLIGHT_OUT_S, FLIGHT_POLAR, livingFraming, shouldAutoRotate, swayOffset } from "../lib/embed";
+import { CUT_HEIGHT, computeWallFacings, isWallCut } from "../lib/cutaway";
+import { AUTO_ROTATE_SPEED, clearAzimuth, embedFitZoom, FLIGHT_HOLD_S, FLIGHT_IN_S, FLIGHT_OUT_S, FLIGHT_POLAR, livingFraming, shouldAutoRotate, swayOffset } from "../lib/embed";
 import { cameraBus, heldKeys, viewState } from "../state/view";
 import { normalizeAngle } from "../lib/geom2d";
 import { boundsCenter, boundsDiag, boundsOf, clampToBounds, easeInOutCubic, groundAxes, heldPan, type ControlsLike } from "./rigCommon";
@@ -221,8 +222,16 @@ export function IsoRig() {
       const dz = home.z - cmd.target[2];
       let az = cur?.az ?? DEFAULT_AZ;
       if (cur && Math.hypot(dx, dz) > 0.8) az = cur.az + Math.max(-0.35, Math.min(0.35, normalizeAngle(Math.atan2(dx, dz) - cur.az)));
+      // Never through a wall: the nearest angle from which the item is in plain sight.
+      const scene = useStore.getState().scene;
+      const facings = computeWallFacings(scene);
+      az = clearAzimuth(cmd.target, scene.walls, az, FLIGHT_POLAR, (w, a) => {
+        const f = w.id ? facings.get(w.id) : undefined;
+        // Same rule as Walls.tsx: walls facing the camera drop to CUT_HEIGHT.
+        return f && isWallCut(f, [-Math.sin(a), -Math.cos(a)]) ? Math.min(CUT_HEIGHT, w.height) : w.height;
+      });
       animateTo({ target: new THREE.Vector3(...cmd.target), polar: FLIGHT_POLAR, zoom, az }, FLIGHT_IN_S);
-      flight.current = { stage: "in", hold: FLIGHT_HOLD_S, all: false };
+      flight.current = { stage: "in", hold: cmd.hold ?? FLIGHT_HOLD_S, all: false };
     } else if (cmd.type === "flyAll") {
       if (!embed) return;
       if (flight.current?.all && flight.current.stage !== "out") {

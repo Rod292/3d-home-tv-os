@@ -1,6 +1,50 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Default (English). French in values-fr: the TV's language picks one. -->
 <resources>
-    <string name="app_name">Maison</string>
-    <string name="home_service_label">Maison : bouton Accueil</string>
-    <string name="home_service_description">Ouvre l\'écran d\'accueil Maison avec le bouton Accueil de la télécommande, à la place de l\'accueil Google TV.</string>
+    <string name="app_name">Home</string>
+    <string name="home_service_label">Home: Home button</string>
+    <string name="home_service_description">Opens this 3D home screen with the remote\'s Home button, instead of the Google TV home.</string>
+
+    <string name="lights_title">Lights</string>
+    <string name="all_off">All off</string>
+    <string name="no_lamp">No lamps</string>
+    <string name="all_lights_off">Everything is off</string>
+    <plurals name="lights_on">
+        <item quantity="one">%d on</item>
+        <item quantity="other">%d on</item>
+    </plurals>
+    <string name="unreachable">Unreachable</string>
+    <string name="fan_speed">%1$s · speed %2$d</string>
+    <string name="fan_stopped">%1$s · off</string>
+    <string name="room_brightness">%1$s · %2$d%%</string>
+    <string name="settings">Settings</string>
+
+    <string name="searching_bridge">Looking for your home on the Wi-Fi…</string>
+    <string name="bridge_unreachable">Home unreachable</string>
+    <string name="bridge_unreachable_status">Home unreachable (%d)</string>
+    <string name="bridge_unreachable_reason">Home unreachable: %s</string>
+    <string name="network_error">network error</string>
+    <string name="tv_not_paired">TV not paired with your home</string>
+    <string name="restarting_3d">Restarting the 3D…</string>
+    <string name="command_failed">%s: command failed</string>
+    <string name="setting_failed">%s: could not change it</string>
+    <string name="scene_failed">Scene %s failed</string>
+    <string name="cannot_open_app">Could not open this app.</string>
+
+    <string name="pair_title">Pair this TV with your home</string>
+    <string name="pair_hint">Type the 6-digit code of your home bridge\n(on the computer running it: pnpm --filter @appart3d/home-bridge pair)</string>
+    <string name="pair_ok">OK</string>
+    <string name="pair_code_length">The code has 6 digits.</string>
+    <string name="pair_no_bridge">Home not found on the Wi-Fi yet…</string>
+    <string name="pairing">Pairing…</string>
+    <string name="pair_wrong_code">Wrong code.</string>
+
+    <string name="sky_sunny">Sunny</string>
+    <string name="sky_clear">Clear</string>
+    <string name="sky_partly">Partly cloudy</string>
+    <string name="sky_cloudy">Cloudy</string>
+    <string name="sky_fog">Fog</string>
+    <string name="sky_rain">Rain</string>
+    <string name="sky_snow">Snow</string>
+    <string name="sky_storm">Storm</string>
 </resources>

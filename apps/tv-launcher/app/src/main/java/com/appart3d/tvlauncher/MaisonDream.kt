@@ -60,6 +60,11 @@ class MaisonDream : DreamService() {
                     override fun onReceivedError(view: WebView, request: WebResourceRequest, error: WebResourceError) {
                         if (request.isForMainFrame) view.visibility = View.GONE
                     }
+                    // Renderer crashed: drop the 3D, keep the clock (unhandled, it would kill the app).
+                    override fun onRenderProcessGone(view: WebView, detail: android.webkit.RenderProcessGoneDetail): Boolean {
+                        view.visibility = View.GONE
+                        return true
+                    }
                 }
             }
             web = w

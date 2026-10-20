@@ -47,7 +47,10 @@ Wall-mounted pieces: `position[1]` is the height of the item's base; put it agai
 | `daylight=auto\|day\|night` | Follows the sun from the bridge by default |
 | `stats=1` | Logs fps, canvas size and draw calls to the console |
 
-Devices switching on/off make the camera fly to their item; the TV item shows what the real TV shows.
+Native shells drive it with `window.appart3dEmbed.post(cmd)` (types in `packages/home`): `spotlightDevice`
+(outline a device's item and fly to it, held until `null`), `highlightDevice`, `focusItem`, `frame`,
+`overview`, `autoRotate`, `setDaylight`. Devices switching on/off make the camera fly to their item —
+always from an angle with no wall in front (gotcha G17); the TV item shows what the real TV shows.
 
 ## Performance
 

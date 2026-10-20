@@ -11,7 +11,7 @@ export type CameraCommand =
   /** Embedded view: glide back to the default framing (living room / whole apartment). */
   | { type: "home" }
   /** Embedded view: short flight toward a device that just switched, then back to the default framing. */
-  | { type: "fly"; target: [number, number, number]; size: number }
+  | { type: "fly"; target: [number, number, number]; size: number; hold?: number }
   /** Embedded view: several devices switched at once — brief pull-back to the whole apartment. */
   | { type: "flyAll" }
   | { type: "capture" }

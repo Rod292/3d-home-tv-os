@@ -117,6 +117,7 @@ describe("flights toward switched devices", () => {
   });
   it("aims a little above the item, lamps on the ceiling included", () => {
     expect(flightTarget({ position: [1, 0, 2], dimensions: [0.4, 1.5, 0.4] }).target).toEqual([1, 0.8999999999999999, 2]);
-    expect(flightTarget({ position: [1, 2.2, 2], dimensions: [0.5, 0.3, 0.5] }).target[1]).toBe(1.2);
+    // A ceiling fan / pendant stays in the frame: its lower third.
+    expect(flightTarget({ position: [1, 2.2, 2], dimensions: [0.5, 0.3, 0.5] }).target[1]).toBeCloseTo(2.29);
   });
 });

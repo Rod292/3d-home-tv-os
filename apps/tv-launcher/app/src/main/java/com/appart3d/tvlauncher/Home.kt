@@ -36,7 +36,7 @@ data class Lamp(
                 val running = st.optBoolean("on") && st.optInt("speed") > 0
                 return Lamp(
                     id = d.getString("id"),
-                    name = "Ventilateur",
+                    name = d.optString("name"),
                     room = d.optString("room"),
                     fanSpeed = if (running) (st.optInt("speed") * steps / 100.0).roundToInt().coerceIn(1, steps) else 0,
                     fanSteps = steps,
@@ -107,7 +107,7 @@ class HomeFeed(
                 c.readTimeout = 60_000 // the bridge pings every 25 s
                 c.setRequestProperty("authorization", "Bearer $token")
                 c.setRequestProperty("accept", "text/event-stream")
-                if (c.responseCode != 200) throw IOException("réponse ${c.responseCode}")
+                if (c.responseCode != 200) throw IOException("HTTP ${c.responseCode}")
                 c.inputStream.bufferedReader().use { r ->
                     val data = StringBuilder()
                     while (running) {
@@ -179,7 +179,7 @@ class HomeFeed(
                 c.setRequestProperty("authorization", "Bearer $token")
                 c.setRequestProperty("content-type", "application/json")
                 c.outputStream.use { it.write(body.toString().toByteArray()) }
-                if (c.responseCode != 200) throw IOException("réponse ${c.responseCode}")
+                if (c.responseCode != 200) throw IOException("HTTP ${c.responseCode}")
                 return JSONObject(c.inputStream.bufferedReader().use { it.readText() })
             } finally {
                 c.disconnect()

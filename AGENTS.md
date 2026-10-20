@@ -30,6 +30,9 @@ Aider, Windsurf…). Tool-specific files (`CLAUDE.md`, `GEMINI.md`, `.cursor/rul
   at hand and tell the person how to undo each change.
 - **Never disable the stock launcher on Google TV** to replace it — see gotcha G1. Use the
   accessibility-service approach of `apps/tv-launcher`.
+- **Basic TV controls must survive any failure of the fancy parts.** Keep the stock launcher as the
+  fallback, keep `onRenderProcessGone` and `CrashGuard` working, and rerun the crash tests of
+  `playbook/04-tv-launcher.md` §7 after changing the launcher (gotchas G15, G16).
 - **Ask before switching real devices** (lights, fan, TV power) except when the person asked for it
   or is testing with you. Prefer the mock bridge (`HOME_BRIDGE_MOCK=1`) while building.
 - **Privacy:** a scan is the inside of someone's home. Scenes, scans, photos, tokens, pairing codes,

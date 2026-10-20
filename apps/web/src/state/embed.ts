@@ -1,6 +1,6 @@
 import { create } from "zustand";
 import type { EmbedCommand, EmbedEvent, FrameTarget } from "@appart3d/home";
-import { deviceIdsForItem, FLIGHT_BURST_MS, flightTarget, isEmbedView, itemFocusSize, parseEmbedCommand, parseFrame, parseOrbit, parseTilt, switchedItems, type Orbit } from "../lib/embed";
+import { deviceIdsForItem, FLIGHT_BURST_MS, flightTarget, isEmbedView, itemFocusSize, itemForDevice, parseEmbedCommand, parseFrame, parseOrbit, parseTilt, switchedItems, type Orbit } from "../lib/embed";
 import { isOn } from "../lib/home";
 import { useStore } from "./store";
 import { useHome } from "./home";
@@ -96,6 +96,20 @@ function run(cmd: EmbedCommand): void {
     case "highlightDevice":
       useEmbed.setState({ highlightDeviceId: cmd.deviceId });
       break;
+    case "spotlightDevice": {
+      const itemId = itemForDevice(useHome.getState().devices, cmd.deviceId);
+      const item = itemId ? useStore.getState().scene.items.find((i) => i.id === itemId) : undefined;
+      useEmbed.setState({ highlightDeviceId: item ? cmd.deviceId : null });
+      if (item) {
+        // Held until cleared; `focused` stops the orbit and the flights of watchSwitches meanwhile.
+        useEmbed.setState({ focused: true });
+        cameraBus.emit({ type: "fly", ...flightTarget(item), hold: Infinity });
+      } else if (useEmbed.getState().focused) {
+        useEmbed.setState({ focused: false });
+        cameraBus.emit({ type: "home" });
+      }
+      return;
+    }
     case "setNight":
       useStore.getState().setDaylight(cmd.night ? "night" : "day", false);
       break;

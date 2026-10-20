@@ -2,7 +2,8 @@
 
 **Scan your home, turn it into a live 3D model, and make it your TV's home screen** — no ads, no
 "recommended for you" — with your lights and devices wired in. Flip a lamp from the remote: it turns
-on in real life and in the 3D. Same home on your phone and in your Mac's menu bar.
+on in real life and in the 3D. Select a lamp and the 3D shows you which one it is. Same home on your
+phone and in your Mac's menu bar.
 
 This repo is built to be **vibe coded**: point your AI coding agent at it and let it walk you
 through. It contains:
@@ -56,7 +57,9 @@ instructions (`AGENTS.md`, plus thin `CLAUDE.md` / `GEMINI.md` / `.cursor/rules`
 ## Safety
 
 Everything done on the TV is reversible ([recovery](playbook/recovery.md)), and agents are told to
-ask before each TV step and before switching real devices. Your scan is the inside of your home: the
+ask before each TV step and before switching real devices. The stock Google TV home stays installed
+as a fallback: if the 3D crashes, the dock and lights keep working; if the launcher crash-loops, the
+Home key goes back to Google TV on its own. Your scan is the inside of your home: the
 `.gitignore` keeps scans, your scene, tokens and device config out of git
 ([privacy](playbook/privacy.md)).
 
@@ -64,7 +67,8 @@ ask before each TV step and before switching real devices. Your scan is the insi
 
 - Tested end to end on **one** setup: a Philips Google TV, Philips Hue, Home Assistant (Tuya fan,
   Philips TV), a HomePod mini, a Mac as host. Other TV brands and hosts should work but are untested.
-- The reference UIs are in **French** (Lumières, Tout éteindre…). Ask your agent to translate.
+- The TV launcher follows the TV's language (English, French). The web editor and the iPhone/Mac
+  apps are still in **French** — ask your agent to translate them.
 - Furniture is procedural: unusual pieces need a small builder (your agent can write it from a
   photo — see phase 2). The scanner needs an iPhone/iPad Pro with LiDAR and Xcode.
 - The Raspberry Pi path is documented, not yet battle-tested.

@@ -101,8 +101,8 @@ object BridgeApi {
             return when (val status = conn.responseCode) {
                 200 -> JSONObject(conn.inputStream.bufferedReader().use { it.readText() }).getString("token")
                 401 -> null
-                429 -> throw IOException("trop d'essais, réessayez plus tard")
-                else -> throw IOException("réponse $status")
+                429 -> throw IOException("too many attempts, try again later")
+                else -> throw IOException("HTTP $status")
             }
         } finally {
             conn.disconnect()

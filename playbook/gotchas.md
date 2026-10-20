@@ -44,6 +44,25 @@ Each one cost hours on the reference install. Format: **symptom → cause → fi
 - **Fix:** use the committed wrapper (`./gradlew`, Gradle 8.14.3). To regenerate it, run
   `gradle wrapper --gradle-version 8.14.3` in an **empty** directory and copy `gradlew` + `gradle/`.
 
+### G15 — A WebView renderer crash kills the whole launcher
+- **Symptom:** the TV home screen disappears (or restarts) out of the blue; logcat:
+  `Renderer process (…) crash detected` followed by the app's death.
+- **Cause:** when the WebView's renderer crashes or is killed for memory and the app doesn't handle it,
+  Android kills the app — and with it the dock, the lights panel and the Home key service.
+- **Fix:** `WebViewClient.onRenderProcessGone` → return `true`, replace the WebView, reload a few
+  seconds later (`MainActivity.replaceWeb`); in the screensaver, just hide the 3D.
+- **Verify:** `am start -n com.appart3d.tvlauncher/.MainActivity --ez crash3d true` (loads
+  `chrome://crash` in the 3D) → logcat `3D renderer gone (crash=true), recreating it`, same app PID,
+  the 3D comes back.
+
+### G16 — Keep a fallback home: a crash loop must not lock the TV
+- **Symptom (without the guard):** a broken build crashes on start; the Home key service keeps
+  reopening it; the TV has no usable home until Android gives up on the service.
+- **Fix:** `CrashGuard` records crashes; 3 within 2 minutes → the Home key service stops taking over
+  and the stock Google TV home answers; it takes over again after 2 calm minutes.
+- **Verify:** three times `--ez crashApp true`, then Home from another app shows `launcherx`; two
+  minutes later Home shows ours again. (`am crash <package>` did nothing on the reference TV.)
+
 ### G10 — WebView timers are per process
 - **Symptom:** the screensaver shows the clock but the 3D never appears.
 - **Cause:** the home activity calls `WebView.pauseTimers()` in `onPause` — it pauses **every** WebView
@@ -87,6 +106,14 @@ Each one cost hours on the reference install. Format: **symptom → cause → fi
 ### G9 — The `glass` role is 32 % opaque
 - A smoked-glass shade drawn with `glass` disappears and only the inner `glow` bulb shows. Draw the
   shade opaque (`toon`) and let a `glow` part peek out where the light really shows.
+
+### G17 — Flights to a device through a wall
+- **Symptom:** when a lamp switches on (or is selected), the camera zooms on it with a wall in front.
+- **Cause:** the dollhouse view lowers the walls **facing** the camera (`lib/cutaway.ts`), but inner
+  partitions seen at an angle stay full height; the flight kept the current angle.
+- **Fix:** `clearAzimuth` tries angles every 10° around the current one and keeps the nearest from
+  which the sight line clears every wall, using the height each wall really has from that angle.
+  Also aim at hanging items' lower third (pendants, ceiling fans) so they stay in the frame.
 
 ### G14 — Camera orbit around the wrong point
 - A framing target computed for one viewing angle drifts across the screen in a full turn. For

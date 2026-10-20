@@ -211,7 +211,7 @@ class WeatherView(context: Context, textSize: Float) : LinearLayout(context) {
 
     private fun show(w: WeatherNow) {
         icon.weather = w
-        temp.text = "${w.temperature}° · ${label(w)}"
+        temp.text = "${w.temperature}° · ${label(context, w)}"
         visibility = VISIBLE
     }
 
@@ -229,14 +229,16 @@ class WeatherView(context: Context, textSize: Float) : LinearLayout(context) {
     companion object {
         private val io = Executors.newSingleThreadExecutor()
 
-        fun label(w: WeatherNow): String = when (w.sky) {
-            Sky.CLEAR -> if (w.isDay) "Ensoleillé" else "Dégagé"
-            Sky.PARTLY -> "Éclaircies"
-            Sky.CLOUDY -> "Nuageux"
-            Sky.FOG -> "Brouillard"
-            Sky.RAIN -> "Pluie"
-            Sky.SNOW -> "Neige"
-            Sky.STORM -> "Orage"
-        }
+        fun label(context: Context, w: WeatherNow): String = context.getString(
+            when (w.sky) {
+                Sky.CLEAR -> if (w.isDay) R.string.sky_sunny else R.string.sky_clear
+                Sky.PARTLY -> R.string.sky_partly
+                Sky.CLOUDY -> R.string.sky_cloudy
+                Sky.FOG -> R.string.sky_fog
+                Sky.RAIN -> R.string.sky_rain
+                Sky.SNOW -> R.string.sky_snow
+                Sky.STORM -> R.string.sky_storm
+            },
+        )
     }
 }
