@@ -1,5 +1,7 @@
 # 3D Home TV OS
 
+[![CI](https://github.com/Rod292/3d-home-tv-os/actions/workflows/ci.yml/badge.svg)](https://github.com/Rod292/3d-home-tv-os/actions/workflows/ci.yml)
+
 **Scan your home, turn it into a live 3D model, and make it your TV's home screen** — no ads, no
 "recommended for you" — with your lights and devices wired in. Flip a lamp from the remote: it turns
 on in real life and in the 3D. Select a lamp and the 3D shows you which one it is. Same home on your
