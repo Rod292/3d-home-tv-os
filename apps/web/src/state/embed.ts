@@ -4,7 +4,7 @@ import { deviceIdsForItem, FLIGHT_BURST_MS, flightTarget, isEmbedView, itemFocus
 import { isOn } from "../lib/home";
 import { useStore } from "./store";
 import { useHome } from "./home";
-import { cameraBus } from "./view";
+import { cameraBus, povInput } from "./view";
 
 /**
  * Embedded 3D view (`?view=3d`): only the 3D canvas, transparent, for the native apps' web views.
@@ -22,6 +22,10 @@ export interface EmbedState {
   highlightDeviceId: string | null;
   /** Item briefly highlighted after a tap. */
   flashItemId: string | null;
+  /** Sofa view: the switchable item in the middle of the view (halo; OK switches it on the TV). */
+  aimItemId: string | null;
+  /** `?pov=drift` (screensaver): seated on the sofa from the start, the head slowly turning. */
+  povDrift: boolean;
   /** The `?scene=` file is loaded (or failed): "ready" may be sent once it is drawn. */
   sceneLoaded: boolean;
   /** Default framing (start, idle sway, after a focus or a flight): living room or whole apartment. */
@@ -42,6 +46,8 @@ export const useEmbed = create<EmbedState>()(() => ({
   focused: false,
   highlightDeviceId: null,
   flashItemId: null,
+  aimItemId: null,
+  povDrift: false,
   sceneLoaded: false,
   frame: "living",
   flyToChanges: true,
@@ -119,8 +125,26 @@ function run(cmd: EmbedCommand): void {
     case "autoRotate":
       useEmbed.setState({ autoRotate: cmd.enabled });
       break;
+    case "pov":
+      // `focused` keeps the flights toward switching devices away while seated.
+      povInput.dir = 0;
+      useEmbed.setState({ focused: cmd.enabled, highlightDeviceId: null, aimItemId: null });
+      // Leaving it remounts the iso camera, which starts on the default framing.
+      useStore.setState({ pov: cmd.enabled });
+      break;
+    case "povTurn":
+      if (cmd.dir !== 0 && povInput.dir === 0) povInput.presses++;
+      povInput.dir = cmd.dir;
+      break;
   }
   cameraBus.emit({ type: "wake" });
+}
+
+/** Sofa view: a new item in the middle of the view (or none) — halo here, OK on the remote switches it. */
+export function embedAim(itemId: string | null): void {
+  if (useEmbed.getState().aimItemId === itemId) return;
+  useEmbed.setState({ aimItemId: itemId });
+  postToNative({ type: "povAim", itemId, deviceIds: itemId ? deviceIdsForItem(useHome.getState().devices, itemId) : [] });
 }
 
 /** Tap on a 3D item in the embedded view: tell the native app, flash the item. */
@@ -154,7 +178,10 @@ export function startEmbed(params: URLSearchParams): boolean {
     lite: params.get("lite") === "1",
     orbit: parseOrbit(params.get("orbit")),
     tilt: parseTilt(params.get("tilt")),
+    povDrift: params.get("pov") === "drift",
+    focused: params.get("pov") === "drift",
   });
+  if (params.get("pov") === "drift") useStore.setState({ pov: true });
   document.documentElement.classList.add("is-embed");
   (window as unknown as WebkitWindow).appart3dEmbed = {
     post(raw: unknown): boolean {

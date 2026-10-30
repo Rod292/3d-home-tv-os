@@ -74,6 +74,14 @@ TV_HOST=<tv-ip> apps/tv-launcher/scripts/tv.sh shell settings put secure screens
 It starts after the TV's inactivity delay (`settings get system screen_off_timeout`, ms). To test
 quickly, lower it to 15000, check, then **restore the original value**.
 
+## 6b. Sofa view
+
+↑ from the dock selects the 3D area (glass frame + hint). OK sits on the sofa nearest the TV, facing
+it; ← / → turn the head; OK on the lamp in the middle of the view switches it; Back (or ↓) stands up.
+With the TV showing this home screen, the 3D TV mirrors it: the TV shows itself showing the sofa…
+It needs a `sofa` and a `television` item in the scene (without a sofa: 2.6 m in front of the TV);
+a `person` figure sitting right where the view is gets hidden while seated.
+
 ## 7. Robustness — keep basic TV controls no matter what
 
 - The 3D runs in a WebView; if its renderer dies, the WebView is replaced and the 3D reloads while the

@@ -46,10 +46,13 @@ Wall-mounted pieces: `position[1]` is the height of the item's base; put it agai
 | `maxDpr=1.5`, `aa=0` | Cap resolution / drop antialiasing |
 | `daylight=auto\|day\|night` | Follows the sun from the bridge by default |
 | `stats=1` | Logs fps, canvas size and draw calls to the console |
+| `pov=drift` | Seated on the sofa from the start, the head slowly turning (the TV screensaver) |
 
 Native shells drive it with `window.appart3dEmbed.post(cmd)` (types in `packages/home`): `spotlightDevice`
 (outline a device's item and fly to it, held until `null`), `highlightDevice`, `focusItem`, `frame`,
-`overview`, `autoRotate`, `setDaylight`. Devices switching on/off make the camera fly to their item —
+`overview`, `autoRotate`, `setDaylight`, `pov` (seated on the sofa nearest the TV, facing it) and
+`povTurn` (turn while a key is held). Seated, the switchable item in the middle of the view gets a
+halo and is reported with a `povAim` event. Devices switching on/off make the camera fly to their item —
 always from an angle with no wall in front (gotcha G17); the TV item shows what the real TV shows.
 
 ## Performance

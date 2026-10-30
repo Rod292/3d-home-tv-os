@@ -5,8 +5,10 @@ An Android app (Kotlin, framework views, no AndroidX) that replaces the TV home 
 - the live 3D apartment on top (the bridge's `?view=3d&lite=1&orbit=full&tilt=64&maxDpr=1.5`),
 - a glass **Lights** panel: selecting a lamp outlines it in the 3D; OK toggles it, ← / → dims it (or sets the ceiling fan speed 0–6),
   scene pills ("All off" + the scenes the bridge defines) — live state over SSE,
+- the sofa view: OK on the 3D sits you on the sofa facing the TV, ← / → look around, OK switches the lamp
+  you look at,
 - a dock with only the chosen apps, clock + weather (Open-Meteo, no key), a background that follows
-  the sun, and a screensaver (`MaisonDream`).
+  the sun, and a screensaver (`MaisonDream`, seated on the sofa, slowly looking around).
 
 **Full procedure, safety notes and pitfalls: [`playbook/04-tv-launcher.md`](../../playbook/04-tv-launcher.md),
 [`playbook/gotchas.md`](../../playbook/gotchas.md), [`playbook/recovery.md`](../../playbook/recovery.md).**

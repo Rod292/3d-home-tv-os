@@ -18,7 +18,7 @@ export function PhotoRig() {
   return view === "eye" ? <EyeRig key="eye" /> : <OrbitPhotoRig key="orbit" />;
 }
 
-function usePerspective(fov: number) {
+export function usePerspective(fov: number) {
   const size = useThree((s) => s.size);
   const set = useThree((s) => s.set);
   const get = useThree((s) => s.get);

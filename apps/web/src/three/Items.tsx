@@ -13,7 +13,7 @@ import { applyLook, LookDriver, MusicNotes, restoreLook, StripGlow } from "./Dev
 import { useTvScreenTexture } from "./TvScreen";
 import { useHome } from "../state/home";
 import { embedItemTapped, useEmbed } from "../state/embed";
-import { itemForDevice } from "../lib/embed";
+import { itemForDevice, sofaPov } from "../lib/embed";
 import { lookForItem, screenOnTop, type ItemLook } from "../lib/home";
 import { wallHeights } from "./wallCut";
 
@@ -58,8 +58,12 @@ export function Items() {
   const embed = useEmbed((s) => s.active);
   const highlightDeviceId = useEmbed((s) => s.highlightDeviceId);
   const flashItemId = useEmbed((s) => s.flashItemId);
+  const aimItemId = useEmbed((s) => s.aimItemId);
   const devices = useHome((s) => s.devices);
   const highlightItemId = useMemo(() => (embed ? itemForDevice(devices, highlightDeviceId) : null), [embed, devices, highlightDeviceId]);
+  // TV sofa view: the figure sitting where the view is would fill the screen.
+  const pov = useStore((s) => s.pov);
+  const povHidden = useMemo(() => new Set(pov ? (sofaPov(items)?.hide ?? []) : []), [pov, items]);
   const ceilingAt = useCeilingLookup();
   const startDrag = useItemDrag(ceilingAt);
 
@@ -121,6 +125,7 @@ export function Items() {
   return (
     <group>
       {items.map((it) => {
+        if (povHidden.has(it.id)) return null;
         const pose = poses.get(it.id)!;
         const clickable = homeMode && (embed || byItem.has(it.id));
         return (
@@ -132,7 +137,7 @@ export function Items() {
             editing={editing}
             selected={editing && it.id === selectedId}
             hovered={!embed && (editing || clickable) && it.id === hoveredId}
-            marked={embed && (it.id === highlightItemId || it.id === flashItemId)}
+            marked={embed && (it.id === highlightItemId || it.id === flashItemId || it.id === aimItemId)}
             embed={embed}
             colliding={it.id === collidingId}
             onDown={startDrag}

@@ -47,4 +47,10 @@
     <string name="sky_rain">Rain</string>
     <string name="sky_snow">Snow</string>
     <string name="sky_storm">Storm</string>
+    <!-- Sofa view over the 3D -->
+    <string name="pov_sit">OK  ·  sit on the sofa</string>
+    <string name="pov_look_around">← →  look around  ·  Back  stand up</string>
+    <string name="pov_turn_on">OK  turn on %1$s</string>
+    <string name="pov_turn_off">OK  turn off %1$s</string>
+    <string name="hero_description">3D view of the home</string>
 </resources>

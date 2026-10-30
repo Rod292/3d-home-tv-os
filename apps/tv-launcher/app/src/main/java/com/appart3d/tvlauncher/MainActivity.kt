@@ -65,6 +65,13 @@ class MainActivity : Activity() {
 
     private lateinit var web: WebView
     private lateinit var heroMessage: TextView
+    /** Focusable frame over the 3D: OK sits on the sofa (`pov`), ← / → look around, Back stands up. */
+    private lateinit var heroFocus: View
+    private lateinit var heroHint: TextView
+    private var pov = false
+    private var povDir = 0
+    /** Seated: the devices of the lamp in the middle of the view (OK switches it). */
+    private var povAim: List<String> = emptyList()
     private lateinit var lights: LightsPanel
     private var feed: HomeFeed? = null
     private lateinit var dockScroll: HorizontalScrollView
@@ -126,6 +133,8 @@ class MainActivity : Activity() {
 
     override fun onPause() {
         super.onPause()
+        // Back from an app: the usual view, not the sofa.
+        if (pov) setPov(false, animate = false)
         // An app is in front: stop the 3D rendering so it gets the whole (modest) GPU.
         web.onPause()
         web.pauseTimers()
@@ -145,6 +154,7 @@ class MainActivity : Activity() {
     @Deprecated("Home screen: Back only returns to the top.")
     @Suppress("DEPRECATION")
     override fun onBackPressed() {
+        if (pov) return setPov(false)
         if (pairPanel.visibility == View.VISIBLE && store.token != null) hidePairing() else goTop()
     }
 
@@ -328,8 +338,88 @@ class MainActivity : Activity() {
         val id = pendingSpotlight
         if (id == sentSpotlight) return@Runnable
         sentSpotlight = id
-        val cmd = JSONObject().put("type", "spotlightDevice").put("deviceId", id ?: JSONObject.NULL)
+        post3d(JSONObject().put("type", "spotlightDevice").put("deviceId", id ?: JSONObject.NULL))
+    }
+
+    private fun post3d(cmd: JSONObject) {
         web.evaluateJavascript("window.appart3dEmbed && window.appart3dEmbed.post($cmd)", null)
+    }
+
+    /**
+     * Sofa view on / off: a short fade hides the cut between the two cameras. The 3D TV mirrors this
+     * screen, so from the sofa the TV shows itself showing the sofa…
+     */
+    private fun setPov(on: Boolean, animate: Boolean = true) {
+        if (on == pov) return
+        pov = on
+        povDir = 0
+        povAim = emptyList()
+        updateHint()
+        val send = {
+            // Seated, the 3D fills its view edge to edge: keep it inside the glass frame's rounded corners.
+            web.clipToOutline = on
+            post3d(JSONObject().put("type", "pov").put("enabled", on))
+        }
+        if (!animate || web.alpha < 1f) return send()
+        web.animate().cancel()
+        web.animate().alpha(0f).setDuration(160).withEndAction {
+            send()
+            web.animate().alpha(1f).setStartDelay(140).setDuration(380).start()
+        }.start()
+    }
+
+    private fun aimedLamp(): Lamp? = lights.lamps().firstOrNull { it.id in povAim && it.reachable }
+
+    private fun updateHint() {
+        val lamp = if (pov) aimedLamp() else null
+        heroHint.text = when {
+            lamp != null -> getString(if (lamp.on == true) R.string.pov_turn_off else R.string.pov_turn_on, lamp.name)
+            pov -> getString(R.string.pov_look_around)
+            else -> getString(R.string.pov_sit)
+        }
+    }
+
+    /** ← / → held on the 3D while seated: turn while held (the web side eases it). */
+    private fun povTurn(dir: Int) {
+        if (dir == povDir) return
+        povDir = dir
+        post3d(JSONObject().put("type", "povTurn").put("dir", dir))
+    }
+
+    private fun onHeroKey(keyCode: Int, event: KeyEvent): Boolean {
+        val down = event.action == KeyEvent.ACTION_DOWN
+        when (keyCode) {
+            KeyEvent.KEYCODE_DPAD_CENTER, KeyEvent.KEYCODE_ENTER -> {
+                // Seated and looking at a lamp: switch it; otherwise sit down / stand up.
+                if (down && event.repeatCount == 0) {
+                    val lamp = if (pov) aimedLamp() else null
+                    if (lamp != null) {
+                        toggle(lamp)
+                        main.post(::updateHint)
+                    } else setPov(!pov)
+                }
+                return true
+            }
+        }
+        if (!pov) return false
+        return when (keyCode) {
+            KeyEvent.KEYCODE_DPAD_LEFT, KeyEvent.KEYCODE_DPAD_RIGHT -> {
+                val dir = if (keyCode == KeyEvent.KEYCODE_DPAD_LEFT) -1 else 1
+                if (down) povTurn(dir) else if (povDir == dir) povTurn(0)
+                true
+            }
+            KeyEvent.KEYCODE_BACK -> {
+                if (!down) setPov(false)
+                true
+            }
+            KeyEvent.KEYCODE_DPAD_UP -> true
+            // Down: stand up and go on to the dock.
+            KeyEvent.KEYCODE_DPAD_DOWN -> {
+                if (down) setPov(false)
+                false
+            }
+            else -> false
+        }
     }
 
     private fun runScene(scene: Scene) {
@@ -385,6 +475,11 @@ class MainActivity : Activity() {
                         heroMessage.animate().alpha(0f).setDuration(400).start()
                         web.animate().alpha(1f).setDuration(900).start()
                     }
+                    "povAim" -> {
+                        val ids = msg.optJSONArray("deviceIds")
+                        povAim = if (pov && ids != null) List(ids.length()) { ids.getString(it) } else emptyList()
+                        updateHint()
+                    }
                     "error" -> {
                         val text = msg.optString("message")
                         if (text.startsWith("Accès refusé")) unauthorized() else heroFailed(text.ifEmpty { getString(R.string.bridge_unreachable) })
@@ -415,6 +510,39 @@ class MainActivity : Activity() {
         web = createWeb()
         hero.addView(web, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply {
             leftMargin = dp(SIDE + PANEL_W)
+        })
+        // Over the 3D: reached from the dock (↑), shows a glass rim and a hint when focused.
+        heroFocus = View(this).apply {
+            isFocusable = true
+            defaultFocusHighlightEnabled = false
+            contentDescription = getString(R.string.hero_description)
+            background = Glass(dp(26).toFloat(), dp(2).toFloat(), fillTop = 0, fillBottom = 0, sheen = 0x14FFFFFF, rimTop = 0xB3FFFFFF.toInt(), rimBottom = 0x33FFFFFF)
+            alpha = 0f
+            setOnKeyListener { _, keyCode, event -> onHeroKey(keyCode, event) }
+            setOnFocusChangeListener { _, focused ->
+                if (!focused) setPov(false)
+                animate().alpha(if (focused) 1f else 0f).setDuration(200).start()
+                heroHint.animate().alpha(if (focused) 1f else 0f).setDuration(200).start()
+            }
+        }
+        hero.addView(heroFocus, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT).apply {
+            leftMargin = dp(SIDE + PANEL_W + 20)
+            rightMargin = dp(SIDE - 16)
+            topMargin = dp(16)
+            bottomMargin = dp(4)
+        })
+        heroHint = TextView(this).apply {
+            text = getString(R.string.pov_sit)
+            setTextColor(0xE6FFFFFF.toInt())
+            textSize = 13f
+            typeface = Typeface.create("sans-serif-medium", Typeface.NORMAL)
+            background = Glass(dp(16).toFloat(), dp(1).toFloat())
+            setPadding(dp(16), dp(7), dp(16), dp(7))
+            alpha = 0f
+        }
+        hero.addView(heroHint, FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL).apply {
+            leftMargin = dp(SIDE + PANEL_W)
+            bottomMargin = dp(18)
         })
         lights = LightsPanel(this, ::toggle, ::dim, ::fanSpeed, ::spotlight, ::runScene, ::allOff)
         hero.addView(lights, FrameLayout.LayoutParams(dp(PANEL_W), ViewGroup.LayoutParams.MATCH_PARENT).apply {
@@ -483,6 +611,12 @@ class MainActivity : Activity() {
     @SuppressLint("SetJavaScriptEnabled")
     private fun createWeb(): WebView = WebView(this).apply {
             setBackgroundColor(Color.TRANSPARENT)
+            // The glass frame of the 3D area (heroFocus), in this view's coordinates.
+            outlineProvider = object : ViewOutlineProvider() {
+                override fun getOutline(view: View, outline: android.graphics.Outline) {
+                    outline.setRoundRect(dp(20), dp(16), view.width - dp(SIDE - 16), view.height - dp(4), dp(26).toFloat())
+                }
+            }
             alpha = 0f
             defaultFocusHighlightEnabled = false
             isFocusable = false
@@ -531,6 +665,7 @@ class MainActivity : Activity() {
         parent.addView(web, index, lp)
         loadedUrl = null
         sentSpotlight = null
+        setPov(false, animate = false)
         showHeroMessage(getString(R.string.restarting_3d))
         main.postDelayed({ reconnect() }, 3000)
     }

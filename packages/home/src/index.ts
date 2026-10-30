@@ -264,12 +264,21 @@ export type EmbedCommand =
   | { type: "overview" }
   /** Default framing to return to (after a focus, a flight, an idle period): living room or all. */
   | { type: "frame"; target: FrameTarget }
-  | { type: "autoRotate"; enabled: boolean };
+  | { type: "autoRotate"; enabled: boolean }
+  /**
+   * Seen from the sofa, at seated eye height, facing the TV (false: back to the default framing).
+   * With the mirrored home screen on the 3D TV, the TV shows itself inside itself.
+   */
+  | { type: "pov"; enabled: boolean }
+  /** In the sofa view: start turning left (-1) / right (1) while a key is held, 0 when released. */
+  | { type: "povTurn"; dir: -1 | 0 | 1 };
 
 export type EmbedEvent =
   | { type: "ready" }
   /** The user tapped a 3D item linked to these devices (empty: unlinked item). */
   | { type: "itemTapped"; itemId: string; deviceIds: string[] }
+  /** Sofa view: the switchable item now in the middle of the view (null: none), with its devices. */
+  | { type: "povAim"; itemId: string | null; deviceIds: string[] }
   | { type: "error"; message: string };
 
 /** French label of a Philips Ambilight effect id ("FOLLOW_VIDEO: STANDARD" → "Vidéo · Standard"). */

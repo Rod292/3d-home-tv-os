@@ -11,6 +11,7 @@ import { Lights } from "./Lights";
 import { IsoRig } from "./IsoRig";
 import { PhotoCapture, PhotoRig } from "./PhotoRig";
 import { SlideshowRig } from "./SlideshowRig";
+import { PovRig } from "./PovRig";
 import { embedRendered, useEmbed } from "../state/embed";
 import { LauncherMirror } from "./LauncherMirror";
 import { FpsProbe } from "./FpsProbe";
@@ -25,6 +26,7 @@ import { isLauncherApp } from "../lib/launcherLook";
 export function Viewport() {
   const photo = useStore((s) => s.mode === "photo");
   const slideshow = useStore((s) => s.slideshow);
+  const pov = useStore((s) => s.pov);
   const embed = useEmbed((s) => s.active);
   const lite = useEmbed((s) => s.lite);
   // The real TV shows the Maison home screen: its 3D twin mirrors it.
@@ -54,7 +56,7 @@ export function Viewport() {
         if (s.mode === "rooms") s.selectRoom(null);
       }}
     >
-      {slideshow ? <SlideshowRig /> : photo ? <PhotoRig /> : <IsoRig />}
+      {slideshow ? <SlideshowRig /> : photo ? <PhotoRig /> : pov ? <PovRig /> : <IsoRig />}
       <PhotoCapture />
       <Lights />
       <Floors />

@@ -39,6 +39,10 @@ export function parseEmbedCommand(raw: unknown): EmbedCommand | null {
       return { type: "overview" };
     case "autoRotate":
       return typeof c.enabled === "boolean" ? { type: "autoRotate", enabled: c.enabled } : null;
+    case "pov":
+      return typeof c.enabled === "boolean" ? { type: "pov", enabled: c.enabled } : null;
+    case "povTurn":
+      return c.dir === -1 || c.dir === 0 || c.dir === 1 ? { type: "povTurn", dir: c.dir } : null;
   }
   return null;
 }
@@ -447,6 +451,76 @@ export function switchedItems(prev: ReadonlyMap<string, boolean>, devices: reado
     if (before !== undefined && before !== on && !changed.includes(d.itemId)) changed.push(d.itemId);
   }
   return { next, changed };
+}
+
+/** Eye height of someone seated on a sofa (m). */
+export const SEATED_EYE = 1.1;
+
+export interface Pov {
+  eye: [number, number, number];
+  /** Looking along (sin yaw, cos yaw) on the ground. */
+  yaw: number;
+  /** Radians, positive looks up. */
+  pitch: number;
+  /** People (3D figures) sitting where the view is: hidden while it lasts. */
+  hide: string[];
+}
+
+/** A figure closer than this (m) to the seated view would fill the screen when looking aside. */
+const POV_PERSONAL_SPACE = 0.75;
+
+/**
+ * Where the sofa view stands: the head of someone seated in the middle of the sofa nearest the TV (a
+ * bit behind the seat center), looking at the TV screen. No sofa: 2.6 m in front of the TV. No TV: the
+ * sofa's front. People sitting right there are listed in `hide` (the view takes their place).
+ */
+export function sofaPov(items: readonly ItemLike[]): Pov | null {
+  const tv = items.find((i) => i.category === "television") ?? null;
+  const dist = (i: ItemLike) => (tv ? Math.hypot(i.position[0] - tv.position[0], i.position[2] - tv.position[2]) : 0);
+  const sofa = items.filter((i) => i.category === "sofa").sort((a, b) => dist(a) - dist(b))[0] ?? null;
+  let x: number;
+  let z: number;
+  if (sofa) {
+    let fx = Math.sin(sofa.rotationY);
+    let fz = Math.cos(sofa.rotationY);
+    // Seated facing the TV: if the model's front points away from it, the head is on the other side.
+    if (tv && fx * (tv.position[0] - sofa.position[0]) + fz * (tv.position[2] - sofa.position[2]) < 0) [fx, fz] = [-fx, -fz];
+    const back = sofa.dimensions[2] * 0.12;
+    [x, z] = [sofa.position[0] - fx * back, sofa.position[2] - fz * back];
+  } else if (tv) {
+    [x, z] = [tv.position[0] + Math.sin(tv.rotationY) * 2.6, tv.position[2] + Math.cos(tv.rotationY) * 2.6];
+  } else return null;
+  const hide = items.filter((i) => i.category === "person" && Math.hypot(i.position[0] - x, i.position[2] - z) < POV_PERSONAL_SPACE).map((i) => i.id);
+  if (!tv) return { eye: [x, SEATED_EYE, z], yaw: Math.atan2(Math.sin(sofa!.rotationY), Math.cos(sofa!.rotationY)), pitch: -0.08, hide };
+  const dx = tv.position[0] - x;
+  const dz = tv.position[2] - z;
+  const screenY = tv.position[1] + tv.dimensions[1] / 2;
+  return { eye: [x, SEATED_EYE, z], yaw: Math.atan2(dx, dz), pitch: Math.atan2(screenY - SEATED_EYE, Math.hypot(dx, dz)), hide };
+}
+
+/** A device the sofa view can switch by looking at it: its item's center and rough radius. */
+export interface AimCandidate {
+  id: string;
+  center: [number, number, number];
+  radius: number;
+}
+
+/** Up to this angle off the view's center (rad), or the item's own apparent size if larger. */
+export const AIM_CONE = (8 * Math.PI) / 180;
+
+/** The candidate closest to the middle of the view (yaw / pitch from `eye`), or null. */
+export function aimedItem(eye: readonly [number, number, number], yaw: number, pitch: number, candidates: readonly AimCandidate[]): string | null {
+  const f = [Math.sin(yaw) * Math.cos(pitch), Math.sin(pitch), Math.cos(yaw) * Math.cos(pitch)];
+  let best: string | null = null;
+  let bestOff = Infinity;
+  for (const c of candidates) {
+    const d = [c.center[0] - eye[0], c.center[1] - eye[1], c.center[2] - eye[2]];
+    const len = Math.hypot(d[0]!, d[1]!, d[2]!);
+    if (len < 0.3) continue;
+    const off = Math.acos(Math.max(-1, Math.min(1, (d[0]! * f[0]! + d[1]! * f[1]! + d[2]! * f[2]!) / len)));
+    if (off <= Math.max(AIM_CONE, Math.atan(c.radius / len)) && off < bestOff) [best, bestOff] = [c.id, off];
+  }
+  return best;
 }
 
 export function parseFrame(v: string | null): FrameTarget | null {

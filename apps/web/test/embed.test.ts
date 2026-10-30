@@ -8,6 +8,8 @@ import {
   itemFocusSize,
   itemForDevice,
   parseEmbedCommand,
+  sofaPov,
+  aimedItem,
   shouldAutoRotate,
   parseOrbit,
   parseTilt,
@@ -116,3 +118,74 @@ describe("clearAzimuth", () => {
     expect(parseEmbedCommand({ type: "spotlightDevice", deviceId: null })).toEqual({ type: "spotlightDevice", deviceId: null });
   });
 });
+
+describe("sofa view", () => {
+  const item = (id: string, category: string, position: [number, number, number], rotationY: number, dimensions: [number, number, number]) => ({ id, category, position, rotationY, dimensions });
+  // A living room: the sofa faces −z, the TV on the wall at z = 0.73 faces +z.
+  const sofa = item("s", "sofa", [4, 0, 3.5], -Math.PI, [2.34, 0.8, 1.03]);
+  const tv = item("t", "television", [4.05, 0.5, 0.73], 0, [1.19, 0.69, 0.1]);
+
+  it("parses pov commands", () => {
+    expect(parseEmbedCommand({ type: "pov", enabled: true })).toEqual({ type: "pov", enabled: true });
+    expect(parseEmbedCommand({ type: "pov" })).toBeNull();
+    expect(parseEmbedCommand({ type: "povTurn", dir: -1 })).toEqual({ type: "povTurn", dir: -1 });
+    expect(parseEmbedCommand({ type: "povTurn", dir: 0 })).toEqual({ type: "povTurn", dir: 0 });
+    expect(parseEmbedCommand({ type: "povTurn", dir: 2 })).toBeNull();
+  });
+
+  it("sits on the sofa, a bit behind its center, looking slightly down at the TV", () => {
+    const p = sofaPov([sofa, tv])!;
+    expect(p.eye[0]).toBeCloseTo(4, 2);
+    expect(p.eye[2]).toBeGreaterThan(3.5);
+    expect(p.eye[1]).toBeCloseTo(1.1);
+    // Facing −z, toward the TV.
+    expect(Math.cos(p.yaw)).toBeLessThan(-0.99);
+    expect(p.pitch).toBeLessThan(0);
+    expect(p.pitch).toBeGreaterThan(-0.2);
+  });
+
+  it("still faces the TV when the sofa model is turned the wrong way", () => {
+    const p = sofaPov([{ ...sofa, rotationY: 0 }, tv])!;
+    expect(p.eye[2]).toBeGreaterThan(3.5);
+    expect(Math.cos(p.yaw)).toBeLessThan(-0.99);
+  });
+
+  it("hides the figure sitting right next to the view, not the ones further away", () => {
+    const neighbour = item("p", "person", [3.55, 0, 3.37], -Math.PI, [0.5, 1.35, 0.75]);
+    const armchair = item("q", "person", [2.85, 0, 2.42], 3, [0.5, 1.28, 0.75]);
+    expect(sofaPov([sofa, tv, neighbour, armchair])!.hide).toEqual(["p"]);
+  });
+
+  it("takes the sofa nearest the TV", () => {
+    const far = item("f", "sofa", [2, 0, 6], 0, [2, 0.8, 1]);
+    expect(sofaPov([far, sofa, tv])!.eye[0]).toBeCloseTo(4, 2);
+  });
+
+  it("without a sofa, sits 2.6 m in front of the TV; with neither, has no view", () => {
+    const p = sofaPov([tv])!;
+    expect(p.eye[2]).toBeCloseTo(0.73 + 2.6);
+    expect(sofaPov([item("x", "table", [0, 0, 0], 0, [1, 0.7, 1])])).toBeNull();
+  });
+});
+
+describe("looking at a lamp from the sofa", () => {
+  const eye: [number, number, number] = [0, 1.1, 0];
+  const lamp = (id: string, x: number, z: number) => ({ id, center: [x, 1.2, z] as [number, number, number], radius: 0.2 });
+
+  it("picks the lamp in the middle of the view, the closest to the center when several are", () => {
+    // Looking along +z.
+    expect(aimedItem(eye, 0, 0, [lamp("a", 0.1, 3), lamp("b", 0.6, 3)])).toBe("a");
+    expect(aimedItem(eye, 0, 0, [lamp("b", 0.6, 3)])).toBeNull();
+  });
+
+  it("follows the head: a lamp to the left is aimed once the view turns to it", () => {
+    const left = lamp("l", 3, 0);
+    expect(aimedItem(eye, 0, 0, [left])).toBeNull();
+    expect(aimedItem(eye, Math.PI / 2, 0, [left])).toBe("l");
+  });
+
+  it("counts a big nearby item even off-center (its apparent size)", () => {
+    expect(aimedItem(eye, 0, 0, [{ id: "big", center: [0.35, 1.1, 1], radius: 0.6 }])).toBe("big");
+  });
+});
+

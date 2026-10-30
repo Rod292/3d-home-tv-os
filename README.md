@@ -4,8 +4,9 @@
 
 **Scan your home, turn it into a live 3D model, and make it your TV's home screen** — no ads, no
 "recommended for you" — with your lights and devices wired in. Flip a lamp from the remote: it turns
-on in real life and in the 3D. Select a lamp and the 3D shows you which one it is. Same home on your
-phone and in your Mac's menu bar.
+on in real life and in the 3D. Select a lamp and the 3D shows you which one it is. Sit on your 3D sofa,
+look around with the remote, and switch a lamp just by looking at it — while the 3D TV shows the TV
+showing the sofa. Same home on your phone and in your Mac's menu bar.
 
 This repo is built to be **vibe coded**: point your AI coding agent at it and let it walk you
 through. It contains:

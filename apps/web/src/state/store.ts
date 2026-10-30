@@ -65,6 +65,8 @@ export interface AppState {
   slideCam: SlideCam;
   /** What to restore when the slideshow ends. */
   slideRestore: { mode: Mode; night: boolean; selectedItemId: string | null; selectedRoomId: string | null } | null;
+  /** Embedded view (TV): seen from the sofa, standing inside — full walls, ceilings on. */
+  pov: boolean;
 
   edit: (recipe: (draft: Draft<Scene>) => void, key?: string) => void;
   beginGesture: () => void;
@@ -158,6 +160,7 @@ export const useStore = create<AppState>()((set, get) => ({
   slidePaused: false,
   slideCam: "iso",
   slideRestore: null,
+  pov: false,
 
   edit: (recipe, key) => {
     const { scene, history } = get();
@@ -403,13 +406,14 @@ export const useStore = create<AppState>()((set, get) => ({
   },
 }));
 
-/** Standing inside a room (photo « Hauteur d'yeux » or a slideshow interior shot): ceilings on, walls full. */
-export function isEyeView(s: Pick<AppState, "mode" | "photoView" | "slideshow" | "slideCam">): boolean {
+/** Standing inside a room (photo « Hauteur d'yeux », a slideshow interior shot, the TV's sofa view): ceilings on, walls full. */
+export function isEyeView(s: Pick<AppState, "mode" | "photoView" | "slideshow" | "slideCam" | "pov">): boolean {
+  if (s.pov) return true;
   return s.slideshow ? s.slideCam === "eye" : s.mode === "photo" && s.photoView === "eye";
 }
 
 /** Camera-side walls lowered right now (user toggle; always on in the slideshow's outside shots). */
-export function isCutActive(s: Pick<AppState, "mode" | "photoView" | "slideshow" | "slideCam" | "wallsCut">): boolean {
+export function isCutActive(s: Pick<AppState, "mode" | "photoView" | "slideshow" | "slideCam" | "wallsCut" | "pov">): boolean {
   if (isEyeView(s)) return false;
   return s.slideshow ? true : s.wallsCut;
 }

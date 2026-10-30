@@ -43,3 +43,6 @@ export const viewState = {
 
 /** Physical key codes currently held for continuous panning (arrows / WASD — ZQSD on AZERTY). */
 export const heldKeys = new Set<string>();
+
+/** Embedded sofa view: remote keys held to look around (-1 left, 1 right); `presses` counts key downs. */
+export const povInput = { dir: 0 as -1 | 0 | 1, presses: 0 };

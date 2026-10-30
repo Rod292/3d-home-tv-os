@@ -19,8 +19,8 @@ import android.widget.LinearLayout
 import android.widget.TextClock
 
 /**
- * Screensaver: the whole apartment turning slowly (live lights, night version after sunset) over the
- * sun-colored background, with a large clock that changes corner every minute (no burn-in).
+ * Screensaver: seated on the sofa, the head slowly turning around the living room (live lights, night
+ * version after sunset) over the sun-colored background, with a large clock that changes corner every minute (no burn-in).
  * Without the bridge (Mac asleep), just the clock on the background.
  */
 class MaisonDream : DreamService() {
@@ -70,7 +70,8 @@ class MaisonDream : DreamService() {
             web = w
             root.addView(w, FrameLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT))
             CookieManager.getInstance().setCookie(base, "appart3d_home=$token; Path=/; Max-Age=31536000; SameSite=Lax") {
-                w.loadUrl("$base/?view=3d&lite=1&frame=all&orbit=full&maxDpr=1.5")
+                // Seated on the sofa, the head slowly turning around the living room.
+                w.loadUrl("$base/?view=3d&lite=1&pov=drift&maxDpr=1.5")
             }
         }
         clock = LinearLayout(this).apply {
