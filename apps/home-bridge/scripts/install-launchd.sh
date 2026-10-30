@@ -8,6 +8,11 @@ APP_DIR="$(cd "$(dirname "$0")/.." && pwd)"
 PLIST="$HOME/Library/LaunchAgents/$LABEL.plist"
 LOG="$HOME/Library/Logs/appart3d-home-bridge.log"
 NODE="$(command -v node || true)"
+# fnm puts a per-shell node path on the PATH that disappears when Node is upgraded;
+# keep its stable default alias in the plist instead, or the bridge dies with the old Node.
+case "$NODE" in
+  */fnm_multishells/*) [ -x "${FNM_DIR:-$HOME/.local/share/fnm}/aliases/default/bin/node" ] && NODE="${FNM_DIR:-$HOME/.local/share/fnm}/aliases/default/bin/node" ;;
+esac
 
 if [ -z "$NODE" ]; then echo "node introuvable dans le PATH" >&2; exit 1; fi
 MAJOR="$("$NODE" -p 'process.versions.node.split(".")[0]')"
